@@ -23,7 +23,11 @@ var tramA = {
   name: "Tramway A",
   path: [],
   color: 'red',
-  previousStation: 0
+  previousStation: 0,
+  position:{
+    x:0,
+    y:0
+  }
   //,
   //stationsDone: 0
 };
@@ -34,7 +38,11 @@ var tramB = {
   name: "Tramway B",
   path: [],
   color: 'blue',
-  previousStation: 0
+  previousStation: 0,
+  position:{
+    x:0,
+    y:0
+  }
   //,
   //stationsDone: 0
 };
@@ -45,7 +53,11 @@ var tramC = {
   name: "Tramway C",
   path: [],
   color: 'green',
-  previousStation: 0
+  previousStation: 0,
+  position:{
+    x:0,
+    y:0
+  }
   //,
   //stationsDone: 0
 };
@@ -169,11 +181,21 @@ function drawTram(tram){
 function goToNextStation(tram){
   // while position is not reached
   var nextStationIndex = tram.previousStation + 1;
+  var nextStationPosition = tram.path[nextStationIndex];
   var myInterval = setInterval(function(){
-    if (tram.position.x < tram.path[nextStationIndex].x){
+    if (tram.position.x < nextStationPosition.x){
       drawTram(tram);
+    }else{
+      tram.position.x = nextStationPosition.x;
     }
   }, 25);
+  /*if (tram.position.x >= nextStationPosition.x){
+    clearInterval(myInterval);
+  }*/
+  tram.previousStation++;
+  regularStop(tram);
+
+
   // when the tram has reached i
   /*if (tram.position.x > 210){
     clearInterval(myInterval);
@@ -181,7 +203,6 @@ function goToNextStation(tram){
 }
 
 function regularStop(tram){
-  currentHaltState++;
 }
 
 
@@ -209,6 +230,10 @@ function drawTracks(tram){
     ctx.stroke();
   }
 
+  tram.position = {
+    x: tram.path[0].x,
+    y: tram.path[0].y
+  }
 
 // drawStops
   /*ctx.beginPath();
@@ -227,7 +252,6 @@ function drawAllTracks(){
   for (var i=0; i<numTram ; i++){
     var tram = allTrams[i];
     drawTracks(tram);
-    //tram.currentHaltState ++;
   }
 }
 
@@ -270,7 +294,11 @@ drawNode();
 
 
 drawAllTrams();
-goToNextStation(tramA);
+
+setTimeout(function(){ goToNextStation(tramA);
+goToNextStation(tramB);
+goToNextStation(tramC); }, 1000);
+
 //continuePath(tramA);
 //goToNextStation(tramA);
 
