@@ -10,54 +10,87 @@ var tramDotRadius = 8;
 var lineWidth = 2;
 ctx.lineWidth = lineWidth;
 
-var node = {
-  x: 500,
-  y: 300
-};
-
-
-// Hypothesis: unique node for now
-// Also the exercice clearly states 3 for now, so parallel.
-
-// cross should be an object
-// how to know if the next station is a cross?
-// - with coordinates of the stations
-
-
-// 1 - computational approach for all coordinates (calculate)
-// 2 - like now, beuhhh
-
-// IRL: oh, same coordinates, that must be a node! NO.
-// Instead: "let's make those 3 lines cross."
-
-var nodes={
-  // lines: all
-  // position: xxx
-  // then place the lines accordingly
-  // stops before node
-  // stops after nodes
-  // etc.
-};
+var distanceBetweenStations = canvasWidth/10;
+var paddingCanvas = canvasWidth/10;
 
 var tramA = {
   path: [{
       x: 100,
       y: 300
-    },
-    {
-        x: 300,
+    },{
+        x: 200,
         y: 300
-    },
-    node, {
+    },{
+      x: 300,
+      y: 300
+    }, {
+      x: 400,
+      y: 300
+    },{
+      x: 500,
+      y: 300
+    },{
+      x: 600,
+      y: 300
+    },{
       x: 700,
+      y: 300
+    },{
+      x: 800,
       y: 300
     }
   ],
   color: 'red',
-  stationsDone: 0,
-  crosses:["myCross"]
-  }
+  stationsDone: 0
 };
+
+// how to make it robust?? ie how to make it so, that the node is always on the
+// path  (and forbidden if not on path)
+// Take a tram
+// Say 'that Y will be a node'
+// Use this coordinate for all trams
+
+
+var allTrams = [tramA];
+var x = canvasWidth/2;
+
+var node = {
+  x: x,
+  trams: allTrams
+};
+//   x: 300,
+
+
+function getMaxNumberOfStationsBeforeNode(){
+  var availableDistance = Math.abs(node.x - paddingCanvas);
+  var maxNumber = Math.trunc(availableDistance/distanceBetweenStations);
+  return maxNumber;
+}
+
+function getMaxNumberOfStationsAfterNode(){
+  var availableDistance = (canvasWidth - node.x) - paddingCanvas;
+  var maxNumber = Math.trunc(availableDistance/distanceBetweenStations);
+  return maxNumber;
+}
+
+
+function generateTramPaths(){
+  generateTramPaths(tramA);
+  // stopsBeforeNode
+}
+
+
+var nodes= [node];
+  // lines: all
+  // position: xxx
+  // then place the lines accordingly
+  // stops before node
+  // stops after nodes
+
+
+function drawNode(){
+
+}
 
 
 var tramB = {
@@ -88,9 +121,6 @@ var tramC = {
   color: 'blue',
   stationsDone: 0
 };
-
-
-//pente de 2
 
 
 /*
@@ -142,7 +172,6 @@ var tramC = {
   }
 };*/
 
-var allTrams = [tramA, tramB, tramC];
 
 
 function drawTram(tram){
@@ -253,8 +282,3 @@ drawAllTracks();
 //goToNextStation(tramA);
 
 // setTimeout(function(){ ctx.lineTo(700, 700); ctx.stroke();}, stationToStationDuration);
-
-// Step 0: Make a plan
-// Step 1: Graphically render tram paths (also good for debug)
-// Finally animate lines (http://stackoverflow.com/questions/23939588/how-to-animate-drawing-lines-on-canvas)
-// Use real distances
