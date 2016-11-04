@@ -7,13 +7,16 @@ var canvasHeight = canvas.height;
 var haltDuration = 500;
 var tramDotRadius = 8;
 
-var lineWidth = 2;
+var lineWidth = 3;
 ctx.lineWidth = lineWidth;
 
 var distanceBetweenStations = canvasWidth/10;
 var paddingCanvas = canvasWidth/10;
+var distanceBetweenTramTracks = 40;
 
-var tramA = {
+/*var tramA = {
+  // path is an araw of objects
+  // path[i].x
   path: [{
       x: 100,
       y: 300
@@ -42,6 +45,38 @@ var tramA = {
   ],
   color: 'red',
   stationsDone: 0
+};*/
+
+
+
+var tramA = {
+  // path is an araw of objects
+  // path[i].x
+  name: "tramway_A",
+  path: [],
+  color: 'red'
+  //,
+  //stationsDone: 0
+};
+
+var tramB = {
+  // path is an araw of objects
+  // path[i].x
+  name: "tramway_A",
+  path: [],
+  color: 'blue'
+  //,
+  //stationsDone: 0
+};
+
+var tramC = {
+  // path is an araw of objects
+  // path[i].x
+  name: "tramway_A",
+  path: [],
+  color: 'green'
+  //,
+  //stationsDone: 0
 };
 
 // how to make it robust?? ie how to make it so, that the node is always on the
@@ -51,34 +86,64 @@ var tramA = {
 // Use this coordinate for all trams
 
 
-var allTrams = [tramA];
+var allTrams = [tramA, tramB, tramC];
 var x = canvasWidth/2;
 
 var node = {
   x: x,
   trams: allTrams
 };
-//   x: 300,
-
 
 function getMaxNumberOfStationsBeforeNode(){
-  var availableDistance = Math.abs(node.x - paddingCanvas);
-  var maxNumber = Math.trunc(availableDistance/distanceBetweenStations);
+  var availableHorizontalSpace = Math.abs(node.x - paddingCanvas);
+  var maxNumber = Math.floor(availableHorizontalSpace/distanceBetweenStations);
   return maxNumber;
 }
 
 function getMaxNumberOfStationsAfterNode(){
-  var availableDistance = (canvasWidth - node.x) - paddingCanvas;
-  var maxNumber = Math.trunc(availableDistance/distanceBetweenStations);
+  var availableHorizontalSpace = (canvasWidth - node.x) - paddingCanvas;
+  var maxNumber = Math.floor(availableHorizontalSpace/distanceBetweenStations);
   return maxNumber;
 }
 
-
-function generateTramPaths(){
-  generateTramPaths(tramA);
-  // stopsBeforeNode
+function getRandomNumberOfStationsAfterNode(){
+  var min = 1;
+  var max = getMaxNumberOfStationsAfterNode();
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function getRandomNumberOfStationsBeforeNode(){
+  var min = 1;
+  var max = getMaxNumberOfStationsBeforeNode();
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
+function generateAllTramPaths(){
+  var numTrams = allTrams.length;
+  for (var tramIndex=0 ; tramIndex<numTrams; tramIndex++){
+    generateTramPath(tramIndex, allTrams[tramIndex]);
+  }
+}
+
+function generateTramPath(tramIndex, tram){
+  // H: tram always crosses
+  // if tram doesn't cross, don't show it!!! simple :)
+  var yPosition = (tramIndex*distanceBetweenTramTracks) + paddingCanvas;
+  var stationsBefore = getRandomNumberOfStationsBeforeNode();
+  var stationsAfter = getRandomNumberOfStationsAfterNode();
+
+  tram.path.push({x: node.x, y: yPosition});
+
+  for (var i=1 ; i<=stationsBefore ; i++){
+    tram.path.unshift({x: node.x - i*distanceBetweenStations, y: yPosition});
+  }
+  for (var j=1 ; j<=stationsAfter ; j++){
+    tram.path.push({x: node.x + j*distanceBetweenStations, y: yPosition});
+  }
+}
+
+// Is it OK to use a callback???
 
 var nodes= [node];
   // lines: all
@@ -91,86 +156,6 @@ var nodes= [node];
 function drawNode(){
 
 }
-
-
-var tramB = {
-  path: [{
-      x: 100,
-      y: 350
-    },
-    node, {
-      x: 700,
-      y: 350
-    }
-  ],
-  color: 'green',
-  stationsDone: 0
-};
-
-
-var tramC = {
-  path: [{
-      x: 200,
-      y: 340
-    },
-    node, {
-      x: 800,
-      y: 340
-    }
-  ],
-  color: 'blue',
-  stationsDone: 0
-};
-
-
-/*
-var tramB = {
-  path: [
-    {
-        x: 100,
-        y: 200
-    },
-    node,
-    {
-        x: 400,
-        y: 200
-    },
-  ],
-  color: 'blue',
-  stationsDone: 0,
-  position: {
-    x: 10,
-    y: 200
-  },
-  previousPosition:{
-    x: 10,
-    y: 200
-  }
-};
-
-var tramC = {
-  path: [
-    {
-        x: 100,
-        y: 400
-    },
-    node,
-    {
-        x: 400,
-        y: 10
-    }
-  ],
-  color: 'green',
-  stationsDone: 0,
-  position: {
-    x: 10,
-    y: 400
-  },
-  previousPosition:{
-    x: 10,
-    y: 400
-  }
-};*/
 
 
 
@@ -201,9 +186,9 @@ function regularStop(tram){
 }
 
 
-function drawTracks(tram, myIterator){
+function drawTracks(tram){
   // ctx.beginPath();
-  ctx.strokeStyle = "grey";
+  //ctx.strokeStyle = "grey";
   // path[myIterator -1]
   //var previousPosition = tram.path[0];
   //var nextPosition = tram.path[1];
@@ -212,16 +197,15 @@ function drawTracks(tram, myIterator){
   var nbStops = tram.path.length;
   for (var i=0 ; i<nbStops ; i++){
     //ctx.beginPath();
-    ctx.strokeStyle = "grey";
+    ctx.strokeStyle = "slategrey";
     ctx.lineTo(tram.path[i].x, tram.path[i].y);
     ctx.stroke();
   }
 
-
   for (var i=0 ; i<nbStops ; i++){
     ctx.beginPath();
     ctx.arc(tram.path[i].x, tram.path[i].y, 4, 0, 2*Math.PI);
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = '#282C34';
     ctx.fill();
     ctx.stroke();
   }
@@ -276,7 +260,16 @@ function checkAllowed(tramA){
   // check number
 }
 
-drawAllTracks();
+generateAllTramPaths();
+drawAllTracks();// how can i be sure???
+drawNode();
+
+
+
+// generateAllTramPaths(drawAllTracks);
+
+
+
 //drawAllDots();
 //continuePath(tramA);
 //goToNextStation(tramA);
