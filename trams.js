@@ -52,7 +52,7 @@ var distanceBetweenTramTracks = 40;
 var tramA = {
   // path is an araw of objects
   // path[i].x
-  name: "tramway_A",
+  name: "Tramway A",
   path: [],
   color: 'red'
   //,
@@ -62,7 +62,7 @@ var tramA = {
 var tramB = {
   // path is an araw of objects
   // path[i].x
-  name: "tramway_A",
+  name: "Tramway B",
   path: [],
   color: 'blue'
   //,
@@ -72,7 +72,7 @@ var tramB = {
 var tramC = {
   // path is an araw of objects
   // path[i].x
-  name: "tramway_A",
+  name: "Tramway C",
   path: [],
   color: 'green'
   //,
@@ -154,7 +154,26 @@ var nodes= [node];
 
 
 function drawNode(){
+  var yFirstTram = allTrams[0].path[0].y;
+  var yLastTram = allTrams[allTrams.length - 1].path[0].y;
 
+  var rectangleWidth = tramDotRadius*2.4;
+  var rectangleHeight = yLastTram - yFirstTram + rectangleWidth;
+
+  var startingPoint = {
+    x: node.x - (rectangleWidth/2),
+    y: yFirstTram - (rectangleWidth/2)
+  }
+  ctx.beginPath();
+  ctx.moveTo(startingPoint.x, startingPoint.y);
+  ctx.lineTo(startingPoint.x + rectangleWidth, startingPoint.y);
+  ctx.lineTo(startingPoint.x + rectangleWidth, startingPoint.y + rectangleHeight);
+  ctx.lineTo(startingPoint.x, startingPoint.y + rectangleHeight);
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = 'white';
+  ctx.lineWidth = 1;
+  ctx.closePath();
+  ctx.stroke();
 }
 
 
