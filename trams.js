@@ -1,10 +1,4 @@
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
-
-var canvasWidth = canvas.width;
-var canvasHeight = canvas.height;
-
-var haltDuration = 500;
+// var haltDuration = 500;
 var tramDotRadius = 6;
 var stationRadius = 4;
 
@@ -18,48 +12,47 @@ var paddingCanvas = Math.floor(canvasWidth/10);
 var distanceBetweenTramTracks = Math.floor(canvasWidth/20);
 
 var tramA = {
-  // path is an araw of objects
-  // path[i].x
   name: "Tramway A",
-  path: [],
   color: 'red',
+  nbPassengers: "123",
+  defaultPriority: 1,
+  path: [],
+  // path is an array of objects: path[i].x
   previousStation: 0,
+  currentStationIndex: 0,
   position:{
     x:0,
     y:0
   }
-  //,
   //stationsDone: 0
 };
 
 var tramB = {
-  // path is an araw of objects
-  // path[i].x
   name: "Tramway B",
-  path: [],
   color: 'blue',
+  nbPassengers: "80",
+  defaultPriority: 2,
+  path: [],
   previousStation: 0,
+  currentStationIndex: 0,
   position:{
     x:0,
     y:0
   }
-  //,
-  //stationsDone: 0
 };
 
 var tramC = {
-  // path is an araw of objects
-  // path[i].x
   name: "Tramway C",
-  path: [],
   color: 'green',
+  nbPassengers: "67",
+  defaultPriority: 3,
+  path: [],
   previousStation: 0,
+  currentStationIndex: 0,
   position:{
     x:0,
     y:0
   }
-  //,
-  //stationsDone: 0
 };
 
 // how to make it robust?? ie how to make it so, that the node is always on the
@@ -137,14 +130,11 @@ var nodes= [node];
   // lines: all
   // position: xxx
   // then place the lines accordingly
-  // stops before node
-  // stops after nodes
 
 
 function drawNode(){
   var yFirstTram = allTrams[0].path[0].y;
   var yLastTram = allTrams[allTrams.length - 1].path[0].y;
-
   var rectangleWidth = stationRadius*5;
   var rectangleHeight = yLastTram - yFirstTram + rectangleWidth;
 
@@ -152,21 +142,15 @@ function drawNode(){
     x: node.x - (rectangleWidth/2),
     y: yFirstTram - (rectangleWidth/2)
   }
-  ctx.beginPath();
-  ctx.moveTo(startingPoint.x, startingPoint.y);
-  ctx.lineTo(startingPoint.x + rectangleWidth, startingPoint.y);
-  ctx.lineTo(startingPoint.x + rectangleWidth, startingPoint.y + rectangleHeight);
-  ctx.lineTo(startingPoint.x, startingPoint.y + rectangleHeight);
+  ctx.rect(startingPoint.x, startingPoint.y, rectangleWidth, rectangleHeight);
   ctx.lineCap = 'round';
   ctx.strokeStyle = 'white';
   ctx.lineWidth = 1;
-  ctx.closePath();
   ctx.stroke();
 }
 
-
-
 function drawTram(tram){
+  // The tram is drawn as a point.
   //ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   ctx.beginPath();
   ctx.arc(tram.position.x, tram.position.y, tramDotRadius, 0, 2*Math.PI);
@@ -174,49 +158,75 @@ function drawTram(tram){
   ctx.fill();
   /*tram.previousPosition.x = tram.position.x;
   tram.previousPosition.y = tram.position.y;*/
-  tram.position.x += 2;
-  //tram.position.y += 2;
+  /*tram.position.x += 2;
+  tram.position.y += 2;*/
 }
 
 function goToNextStation(tram){
-  // while position is not reached
-  var nextStationIndex = tram.previousStation + 1;
-  var nextStationPosition = tram.path[nextStationIndex];
-  var myInterval = setInterval(function(){
-    if (tram.position.x < nextStationPosition.x){
-      drawTram(tram);
-    }else{
-      tram.position.x = nextStationPosition.x;
-    }
-  }, 25);
-  /*if (tram.position.x >= nextStationPosition.x){
-    clearInterval(myInterval);
-  }*/
-  tram.previousStation++;
-  regularStop(tram);
+
+  if (checkIfCanGo(tram)){
+
+    var nextStationIndex = tram.previousStation + 1;
+    var nextStationPosition = tram.path[nextStationIndex];
+    var myInterval = setInterval(function(){
+      if (tram.position.x < nextStationPosition.x){
+        drawTram(tram);
+        tram.position.x += 1;
+        tram.position.y += 0;
+      }else if (tram.position.x === nextStationPosition.x){
+        alert("reached!");
+        clearInterval(myInterval);
+        tram.previousStation++;
+        //tram.position.x = nextStationPosition.x;
+        //tram.previousStation +=1;
+        //regularStop(tram);
+      }
+    }, 25);
+
+    /*if (tram.position.x >= nextStationPosition.x){
+      clearInterval(myInterval);
+    }*/
+
+    /*tram.position.x = nextStationPosition.x;
+    tram.position.y = nextStationPosition.y;*/
+
+    /*tram.position.x += 2;
+    tram.position.y += 2;*/
+
+    //drawTram(tram);
+    //regularStop(tram);
+    //nextStationIndex++;
+  }
 
 
-  // when the tram has reached i
-  /*if (tram.position.x > 210){
-    clearInterval(myInterval);
-  }*/
 }
 
 function regularStop(tram){
+  //alert(tram.name + ": " + tram.path[tram.previousStation + 1].x);
+  setTimeout(goToNextStation(tram), 1000);
+}
+
+function goAndStop(tram){
+
+  goToNextStation(tram);
+  setTimeout(function(){goToNextStation(tram);}, 4000);
+
+  //var myInterval = setInterval(function(){drawTram(tram)}, 25);
+}
+
+function checkIfCanGo(tram){
+  //alert("can go");
+  // for all trams, is the next station a node for one of them?
+  return true;
 }
 
 
 function drawTracks(tram){
-  // ctx.beginPath();
-  //ctx.strokeStyle = "grey";
-  // path[myIterator -1]
-  //var previousPosition = tram.path[0];
-  //var nextPosition = tram.path[1];
-  ctx.moveTo(tram.path[0].x, tram.path[0].y);//init context
+  ctx.moveTo(tram.path[0].x, tram.path[0].y);
+  //init context
 
   var nbStops = tram.path.length;
   for (var i=0 ; i<nbStops ; i++){
-    //ctx.beginPath();
     ctx.strokeStyle = tracksColor;
     ctx.lineTo(tram.path[i].x, tram.path[i].y);
     ctx.stroke();
@@ -234,17 +244,6 @@ function drawTracks(tram){
     x: tram.path[0].x,
     y: tram.path[0].y
   }
-
-// drawStops
-  /*ctx.beginPath();
-  ctx.strokeStyle = 'blue';
-  var previousPositionB = [0, 0];
-  var nextPositionB = [400, 500];
-  ctx.moveTo(previousPositionB[0], previousPositionB[1]);//init context
-  ctx.lineTo(nextPositionB[0], nextPositionB[1]);//actually move the tram
-  ctx.stroke();*/
-
-  // tram is considered a point!!
 }
 
 function drawAllTracks(){
@@ -286,19 +285,36 @@ function checkAllowed(tramA){
 generateAllTramPaths();
 drawAllTracks();// how can i be sure??? callback?
 drawNode();
-
-
-
-// generateAllTramPaths(drawAllTracks);
-
-
+//go();
 
 drawAllTrams();
 
-setTimeout(function(){ goToNextStation(tramA);
-goToNextStation(tramB);
-goToNextStation(tramC); }, 1000);
+setTimeout(function(){
+  goAndStop(tramA);
+}, 800);
 
+/*unction go(){
+  //while(tramA.position.x < tramA.path[tramA.path.length - 1].x){
+  while(tramA.currentStationIndex < tramA.path.length){
+    console.log("yo");
+    drawTram(tramA);
+    //tramA.position.x = tramA.path[tramA.path.length - 1].x;
+
+    tramA.currentStationIndex++;
+    tramA.position.x = tramA.path[tramA.currentStationIndex].x;
+    tramA.position.y = tramA.path[tramA.currentStationIndex].y;
+  }
+}*/
+/*setTimeout(function(){
+  while(tramA.position.x < tramA.path[tramA.path.length - 1].x){
+    console.log("yo");
+    drawTram(tramA);
+    tramA.position.x += 80;
+    setTimeout(function(){}, 1000);
+  }
+}, 800);*/
+
+// tram is considered a point!!
 //continuePath(tramA);
 //goToNextStation(tramA);
 
