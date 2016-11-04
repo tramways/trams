@@ -22,7 +22,8 @@ var tramA = {
   // path[i].x
   name: "Tramway A",
   path: [],
-  color: 'red'
+  color: 'red',
+  previousStation: 0
   //,
   //stationsDone: 0
 };
@@ -32,7 +33,8 @@ var tramB = {
   // path[i].x
   name: "Tramway B",
   path: [],
-  color: 'blue'
+  color: 'blue',
+  previousStation: 0
   //,
   //stationsDone: 0
 };
@@ -42,7 +44,8 @@ var tramC = {
   // path[i].x
   name: "Tramway C",
   path: [],
-  color: 'green'
+  color: 'green',
+  previousStation: 0
   //,
   //stationsDone: 0
 };
@@ -165,15 +168,16 @@ function drawTram(tram){
 
 function goToNextStation(tram){
   // while position is not reached
+  var nextStationIndex = tram.previousStation + 1;
   var myInterval = setInterval(function(){
-    if (tram.position.x < 210){
+    if (tram.position.x < tram.path[nextStationIndex].x){
       drawTram(tram);
     }
   }, 25);
   // when the tram has reached i
-  if (tram.position.x > 210){
+  /*if (tram.position.x > 210){
     clearInterval(myInterval);
-  }
+  }*/
 }
 
 function regularStop(tram){
