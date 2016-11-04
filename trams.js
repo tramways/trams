@@ -5,49 +5,17 @@ var canvasWidth = canvas.width;
 var canvasHeight = canvas.height;
 
 var haltDuration = 500;
-var tramDotRadius = 8;
+var tramDotRadius = 6;
+var stationRadius = 4;
+
+var tracksColor = "#555b67";
 
 var lineWidth = 3;
 ctx.lineWidth = lineWidth;
 
-var distanceBetweenStations = canvasWidth/10;
-var paddingCanvas = canvasWidth/10;
-var distanceBetweenTramTracks = 40;
-
-/*var tramA = {
-  // path is an araw of objects
-  // path[i].x
-  path: [{
-      x: 100,
-      y: 300
-    },{
-        x: 200,
-        y: 300
-    },{
-      x: 300,
-      y: 300
-    }, {
-      x: 400,
-      y: 300
-    },{
-      x: 500,
-      y: 300
-    },{
-      x: 600,
-      y: 300
-    },{
-      x: 700,
-      y: 300
-    },{
-      x: 800,
-      y: 300
-    }
-  ],
-  color: 'red',
-  stationsDone: 0
-};*/
-
-
+var distanceBetweenStations = Math.floor(canvasWidth/10);
+var paddingCanvas = Math.floor(canvasWidth/10);
+var distanceBetweenTramTracks = Math.floor(canvasWidth/20);
 
 var tramA = {
   // path is an araw of objects
@@ -141,6 +109,11 @@ function generateTramPath(tramIndex, tram){
   for (var j=1 ; j<=stationsAfter ; j++){
     tram.path.push({x: node.x + j*distanceBetweenStations, y: yPosition});
   }
+
+  tram.position={
+    x: tram.path[0].x,
+    y: tram.path[0].y
+  };
 }
 
 // Is it OK to use a callback???
@@ -157,7 +130,7 @@ function drawNode(){
   var yFirstTram = allTrams[0].path[0].y;
   var yLastTram = allTrams[allTrams.length - 1].path[0].y;
 
-  var rectangleWidth = tramDotRadius*2.4;
+  var rectangleWidth = stationRadius*5;
   var rectangleHeight = yLastTram - yFirstTram + rectangleWidth;
 
   var startingPoint = {
@@ -184,18 +157,21 @@ function drawTram(tram){
   ctx.arc(tram.position.x, tram.position.y, tramDotRadius, 0, 2*Math.PI);
   ctx.fillStyle = tram.color;
   ctx.fill();
-  tram.previousPosition.x = tram.position.x;
-  tram.previousPosition.y = tram.position.y;
+  /*tram.previousPosition.x = tram.position.x;
+  tram.previousPosition.y = tram.position.y;*/
   tram.position.x += 2;
-  tram.position.y += 2;
+  //tram.position.y += 2;
 }
 
 function goToNextStation(tram){
   // while position is not reached
-  var myInterval = setInterval(function(){ drawTram(tram) }, 25);
+  var myInterval = setInterval(function(){
+    if (tram.position.x < 210){
+      drawTram(tram);
+    }
+  }, 25);
   // when the tram has reached i
   if (tram.position.x > 210){
-    alert("wh");
     clearInterval(myInterval);
   }
 }
@@ -216,14 +192,14 @@ function drawTracks(tram){
   var nbStops = tram.path.length;
   for (var i=0 ; i<nbStops ; i++){
     //ctx.beginPath();
-    ctx.strokeStyle = "slategrey";
+    ctx.strokeStyle = tracksColor;
     ctx.lineTo(tram.path[i].x, tram.path[i].y);
     ctx.stroke();
   }
 
   for (var i=0 ; i<nbStops ; i++){
     ctx.beginPath();
-    ctx.arc(tram.path[i].x, tram.path[i].y, 4, 0, 2*Math.PI);
+    ctx.arc(tram.path[i].x, tram.path[i].y, stationRadius, 0, 2*Math.PI);
     ctx.fillStyle = '#282C34';
     ctx.fill();
     ctx.stroke();
@@ -252,7 +228,7 @@ function drawAllTracks(){
 }
 
 
-function drawAllDots(){
+function drawAllTrams(){
   var numTrams = allTrams.length;
   for (var i=0 ; i<numTrams ; i++){
     drawTram(allTrams[i]);
@@ -280,7 +256,7 @@ function checkAllowed(tramA){
 }
 
 generateAllTramPaths();
-drawAllTracks();// how can i be sure???
+drawAllTracks();// how can i be sure??? callback?
 drawNode();
 
 
@@ -289,7 +265,8 @@ drawNode();
 
 
 
-//drawAllDots();
+drawAllTrams();
+goToNextStation(tramA);
 //continuePath(tramA);
 //goToNextStation(tramA);
 
