@@ -1,4 +1,4 @@
-// var haltDuration = 500;
+var haltDuration = 2000;
 var tramDotRadius = 6;
 var stationRadius = 4;
 
@@ -152,6 +152,7 @@ function drawNode(){
 function drawTram(tram){
   // The tram is drawn as a point.
   //ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  console.log("dra: " + tram.name + " " + tram.position.x);
   ctx.beginPath();
   ctx.arc(tram.position.x, tram.position.y, tramDotRadius, 0, 2*Math.PI);
   ctx.fillStyle = tram.color;
@@ -174,9 +175,12 @@ function goToNextStation(tram){
         tram.position.x += 1;
         tram.position.y += 0;
       }else if (tram.position.x === nextStationPosition.x){
-        alert("reached!");
+        drawTram(tram);
         clearInterval(myInterval);
         tram.previousStation++;
+        //freezes for 2 sec
+
+
         //tram.position.x = nextStationPosition.x;
         //tram.previousStation +=1;
         //regularStop(tram);
@@ -208,10 +212,16 @@ function regularStop(tram){
 
 function goAndStop(tram){
 
-  goToNextStation(tram);
-  setTimeout(function(){goToNextStation(tram);}, 4000);
-
-  //var myInterval = setInterval(function(){drawTram(tram)}, 25);
+  //goToNextStation(tram);
+  //setTimeout(function(){goToNextStation(tram);}, 4000);
+  var nextStationIndex = tram.previousStation + 1;
+  var nextStationPosition = tram.path[nextStationIndex];
+  while(tram.position.x < nextStationPosition.x){
+    tram.position.x += 5;
+    console.log("updated");
+    tram.position.y += 0;
+    drawTram(tram);
+  }
 }
 
 function checkIfCanGo(tram){
@@ -285,15 +295,69 @@ function checkAllowed(tramA){
 generateAllTramPaths();
 drawAllTracks();// how can i be sure??? callback?
 drawNode();
-//go();
+/*var myInterval = setInterval(function(){
+  drawTram(tramA);
+}, 100);*/
 
-drawAllTrams();
+//drawAllTrams();
 
 setTimeout(function(){
-  goAndStop(tramA);
-}, 800);
+    goAllTheWay(tramA);
+    goAllTheWay(tramB);
+    goAllTheWay(tramC);
+}, 500);
 
-/*unction go(){
+/*function stopAndGoToNextStation(tram){
+  var stopDuration = 1000;
+  setTimeout(function(){
+    goToNextStation(tram); // needs to be wrapped (closure) otherwise is invoked immediately
+  }, stopDuration);
+}*/
+
+
+function goAllTheWay(tram){
+    var vx = 1;
+    var vy = 0;
+    var myInt = setInterval(function(){
+      if(isAtAStation(tram)){
+        haltAtStation(tram);
+        if (isAtLastStation(tram)){
+          clearInterval(myInt);
+        }
+      }else{
+        tram.position.x += vx;
+        tram.position.y += vy;
+      }
+      drawTram(tram);
+    }, 1000/20);
+}
+
+
+function isAtLastStation(tram){
+  return false;
+}
+
+function isAtAStation(tram){
+  var xPositionOfStations = [];
+  for (var i=0 ; i<tram.path.length; i++){
+    xPositionOfStations.push(tram.path[i].x);
+  }
+  var k = xPositionOfStations.indexOf(tram.position.x);
+  if (k > -1){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function haltAtStation(tram){
+  setTimeout(function(){
+    tram.position.x += 1;
+  }, haltDuration);
+}
+
+
+/*function go(){
   //while(tramA.position.x < tramA.path[tramA.path.length - 1].x){
   while(tramA.currentStationIndex < tramA.path.length){
     console.log("yo");
@@ -315,7 +379,5 @@ setTimeout(function(){
 }, 800);*/
 
 // tram is considered a point!!
-//continuePath(tramA);
-//goToNextStation(tramA);
 
 // setTimeout(function(){ ctx.lineTo(700, 700); ctx.stroke();}, stationToStationDuration);
