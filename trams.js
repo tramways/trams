@@ -334,7 +334,16 @@ function goAllTheWay(tram){
 
 
 function isAtLastStation(tram){
-  return false;
+  var xPositionOfStations = [];
+  for (var i=0 ; i<tram.path.length; i++){
+    xPositionOfStations.push(tram.path[i].x);
+  }
+  var k = xPositionOfStations.indexOf(tram.position.x);
+  if (k === tram.path.length - 1){
+    return true;
+  }else{
+    return false;
+  }
 }
 
 function isAtAStation(tram){
