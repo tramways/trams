@@ -1,5 +1,5 @@
 var haltDuration = 2000;
-var additionalhaltDuration = 3000;
+var securityHaltDuration = 3000;
 var tramDotRadius = 6;
 var stationRadius = 4;
 
@@ -45,7 +45,7 @@ function getRandomNumberOfStationsAfterNode(){
   var min = 1;
   var max = getMaxNumberOfStationsAfterNode();
   // return Math.floor(Math.random() * (max - min + 1)) + min;
-  return 1;
+  return 2;
 }
 
 function getRandomNumberOfStationsBeforeNode(){
@@ -254,9 +254,9 @@ function isAtAStation(tram){
   }
   var k = xPositionOfStations.indexOf(tram.position.x);
   if (k > -1){
-    if (tram === tramA){
+    /*if (tram === tramA){
       console.log(tram.name + " is at station " + k);
-    }
+    }*/
     return true;
   }else{
     return false;
@@ -264,30 +264,50 @@ function isAtAStation(tram){
 }
 
 function haltAtStation(tram){
-  //console.log(tram.name + " arrived at station " + (x) + " of " + tram.path.length);
+  console.log(tram.name + " arrived at station ");
   /*if (tram === tramA){
     console.log(tram.name + ": start halt at " + tram.position.x);
   }*/
-  if (tram === tramA){
-    console.log(tram.name + ": halt is called");
+  // if (tram === tramA){
+  //   console.log(tram.name + ": halt is called");
+  // }
+
+
+  if (isAllowed(tram)){
+    setTimeout(function(){
+      tram.position.x += 1;//this is called too many times, it just accelerates the tram sometimes
+      goAllTheWay(tram);
+    }, haltDuration);
+  }else{
+    setTimeout(function(){
+      haltAtStation(tram);
+    }, securityHaltDuration);// will get too much
   }
-  setTimeout(function(){
-    tram.position.x += 1;//tis is called too many times, it just accelerates the tram sometimes
+  /*setTimeout(function(){
+    tram.position.x += 1;//this is called too many times, it just accelerates the tram sometimes
     goAllTheWay(tram);
-    if (tram === tramA){
-      console.log(tram.name + ": end halt at " + tram.position.x);
-    }
-  }, getHaltDuration(tram));
+  }, getHaltDuration(tram));*/
+
 }
 
 
-function getHaltDuration(tram){
+
+
+
+
+
+function isAllowed(tram){
+    return !mustWaitLonger(tram);
+}
+
+
+/*function getHaltDuration(tram){
   var haltDurationX = haltDuration;
   if (mustWaitLonger(tram)){
     haltDurationX += additionalhaltDuration;
   }
   return haltDurationX;
-}
+}*/
 
 function getNextStation(tram){
   var currentStationIndex = getCurrentStationIndex(tram);
@@ -327,7 +347,7 @@ function hasPriority(tram, competitors){
     }
   //}
 
-  var numTrams = allTrams.length;
+  /*var numTrams = allTrams.length;
   if (isNumPassengersDifferent()){
 
   }else{
@@ -335,7 +355,7 @@ function hasPriority(tram, competitors){
   }
   for (var i=0 ; i<numTrams ; i++){
     //if()
-  }
+  }*/
 }
 
 function getCompetitors(tram){
