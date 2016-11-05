@@ -12,9 +12,9 @@ var distanceBetweenStations = Math.floor(canvasWidth/10);
 var paddingCanvas = Math.floor(canvasWidth/10);
 var distanceBetweenTramTracks = Math.floor(canvasWidth/20);
 
-var tramA = createTram("Tramway A", 'red', 80);
-var tramB = createTram("Tramway B", 'blue', 123);
-var tramC = createTram("Tramway C", 'green', 123);
+var tramA = createTram("Tramway A", 'red', 10);
+var tramB = createTram("Tramway B", 'blue', 10);
+var tramC = createTram("Tramway C", 'green', 80);
 
 var allTrams = [tramA, tramB, tramC];
 // how to make it robust?? ie how to make it so, that the node is always on the
@@ -361,7 +361,6 @@ function getCompetitors(tram){
   return competitors;
 }
 
-
 // this also supports the case where several nodes. dont leave simulatenously
 function hasPriority(tram, competitors){
   var competingTrams = competitors;
@@ -383,30 +382,59 @@ function getPrioritaryTram(competitors, tram){
   }else{
     console.log("Using default");
   }
-  console.log(prioTram.name + " has won prio");
+  //var prioTram = getPrioritaryTramFromRule(competitors, tram);
+
   return prioTram;
 }
 
 function getPrioritaryTramFromRule(competitors, tram){
-  var competingTrams = competitors;
-  competingTrams.push(tram);
 
-  var prioTrams = [];
+  var competingTrams = competitors;
+  competingTrams.unshift(tram);
+  var nbCompetitors = competingTrams.length;
+  var nbsPassengers = [];
+  var highestNbPassengers = 0;
+
+  for (var i=1 ; i<nbCompetitors ; i++){
+    nbsPassengers.push(competitors[i].nbPassengers);
+  }
+  nbsPassengers.sort(function(a, b){
+    return b-a;
+  });
+
+  for (var i=0 ; i<nbCompetitors ; i++){
+    if (competingTrams[i].nbPassengers > highestNbPassengers){
+      highestNbPassengers = competingTrams[i].nbPassengers;
+      prioTram = competingTrams[i];
+    }
+  }
+
+  if(nbsPassengers[0]>nbsPassengers[1]){
+    return prioTram;
+  }else{
+    // They are equal
+    return null;
+  }
+
+
+  /*var prioTrams = [];
   var prioTram = null;
   var highestNbPassengers = 0;
   var nbCompetitors = competingTrams.length;
 
   for (var i=0 ; i<nbCompetitors ; i++){
-    if (competingTrams[i].nbPassengers >= highestNbPassengers){
-      // Low prio number means high prio.
+    if (competingTrams[i].nbPassengers > highestNbPassengers){
       highestNbPassengers = competingTrams[i].nbPassengers;
-      prioTrams.push(competingTrams[i]);
+      prioTram = competingTrams[i];
+    }else if (competingTrams[i].nbPassengers === highestNbPassengers){
+      prioTrams.push(prioTram);
+    }else{
     }
   }
   if (prioTrams.length === 1){
     prioTram = prioTrams[0];
   }
-  return prioTram;
+  return prioTram;*/
 }
 
 function getDefaultPrioritaryTram(competitors, tram){
