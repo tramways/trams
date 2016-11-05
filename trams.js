@@ -221,50 +221,29 @@ function goAllTheWay(tram){
 
 
 function isAtLastStation(tram){
-  var xPositionOfStations = [];
-  for (var i=0 ; i<tram.path.length; i++){
-    xPositionOfStations.push(tram.path[i].x);
-  }
-  var k = xPositionOfStations.indexOf(tram.position.x);
-  if (k === tram.path.length - 1){
-    return true;
-  }else{
-    return false;
-  }
+  var lastStationIndex = tram.path.length - 1;
+  return getCurrentStationIndex(tram) === lastStationIndex? true:false;
 }
 
-
 function isAtFirstStation(tram){
-  var xPositionOfStations = [];
-  for (var i=0 ; i<tram.path.length; i++){
-    xPositionOfStations.push(tram.path[i].x);
-  }
-  var k = xPositionOfStations.indexOf(tram.position.x);
-  if (k === 0){
-    return true;
-  }else{
-    return false;
-  }
+  return getCurrentStationIndex(tram) === 0? true:false;
 }
 
 function isAtAStation(tram){
-  var xPositionOfStations = [];
+  return getCurrentStationIndex(tram) > -1? true:false;
+}
+
+function getCurrentStationIndex(tram){
+  // Only x counts
+  var xStations = [];
   for (var i=0 ; i<tram.path.length; i++){
-    xPositionOfStations.push(tram.path[i].x);
+    xStations.push(tram.path[i].x);
   }
-  var k = xPositionOfStations.indexOf(tram.position.x);
-  if (k > -1){
-    /*if (tram === tramA){
-      console.log(tram.name + " is at station " + k);
-    }*/
-    return true;
-  }else{
-    return false;
-  }
+  return xStations.indexOf(tram.position.x);
 }
 
 function haltAtStation(tram){
-  console.log(tram.name + " arrived at station ");
+  console.log(tram.name + " arrived at station");
   /*if (tram === tramA){
     console.log(tram.name + ": start halt at " + tram.position.x);
   }*/
