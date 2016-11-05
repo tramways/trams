@@ -12,9 +12,9 @@ var distanceBetweenStations = Math.floor(canvasWidth/10);
 var paddingCanvas = Math.floor(canvasWidth/10);
 var distanceBetweenTramTracks = Math.floor(canvasWidth/20);
 
-var tramA = createTram("Tramway A", 'red', 123);
-var tramB = createTram("Tramway B", 'blue', 80);
-var tramC = createTram("Tramway C", 'green', 60);
+var tramA = createTram("Tramway A", 'red', 80);
+var tramB = createTram("Tramway B", 'blue', 123);
+var tramC = createTram("Tramway C", 'green', 123);
 
 var allTrams = [tramA, tramB, tramC];
 // how to make it robust?? ie how to make it so, that the node is always on the
@@ -51,7 +51,7 @@ function getRandomNumberOfStationsAfterNode(){
 function getRandomNumberOfStationsBeforeNode(){
   var min = 1;
   var max = getMaxNumberOfStationsBeforeNode();
-  // return Math.floor(Math.random() * (max - min + 1)) + min;
+  //return Math.floor(Math.random() * (max - min + 1)) + min;
   return 2;
 }
 
@@ -269,12 +269,6 @@ function haltAtStation(tram){
 
 }
 
-
-
-
-
-
-
 function isAllowed(tram){
     return !mustWaitLonger(tram);
 }
@@ -309,45 +303,35 @@ function nextStationIsNode(tram){
   return (tram.path[nextStationIndex].x === node.x)? true:false;
 }
 
-function hasPriority(tram, competitors){
-  var hasPriority = false;
-  var nbCompetitors = competitors.length;
-  //if (nbCompetitors > 0){
-    for (var i=0; i<nbCompetitors ; i++){
-      if (competitors[i].nbPassengers > tram.nbPassengers){
-      // if at least one other competitor has strictly more passengers
-        console.log(tram.name +" has no prio because of " + competitors[i].name);
-        return false;
-      }else{
-        console.log(tram.name +" has prio");
-        return true;
-        // if no other competitor
-      }
-    }
-  //}
 
-  /*var numTrams = allTrams.length;
-  if (isNumPassengersDifferent()){
 
-  }else{
-    var highestPriority = Math.max(tramA.defaultPriority, tramB.defaultPriority, tramC.defaultPriority);
-  }
-  for (var i=0 ; i<numTrams ; i++){
-    //if()
-  }*/
-}
 
-function getCompetitors(tram){
-  var competitors = [];
-  var numTrams = allTrams.length;
-  for (var i=0 ; i<numTrams ; i++){
-    if (nextStationIsNode(allTrams[i]) && allTrams[i]!=tram){
-      console.log(allTrams[i].name + " competes with " + tram.name);
-      competitors.push(allTrams[i]);
-    }
-  }
-  return competitors;
-}
+//
+// function getPrioritaryTramFromRule(competitors){
+//   var prioTram = null;
+//   var nbCompetitors = competitors.length;
+//
+//   var nbsPassengers=[];
+//   var sortedTrams = [];
+//
+//   for (var i=1 ; i<nbCompetitors ; i++){
+//     nbsPassengers.push(competitors[i].nbPassengers);
+//   }
+//   nbsPassengers.sort(function(a, b){
+//     return b-a
+//   });
+//
+//   for (var i=1 ; i<nbCompetitors ; i++){
+//     nbsPassengers.push(competitors[i].nbPassengers);
+//   }
+//
+//   if (nbsPassengers[0] > nbsPassengers[1]){
+//     prioTram =
+//   }
+//
+//   return prioTram;
+// }
+
 
 function mustWaitLonger(tram){
   var mustWaitLonger = false;
@@ -363,3 +347,123 @@ function mustWaitLonger(tram){
   }
   return mustWaitLonger;
 }
+
+
+function getCompetitors(tram){
+  var competitors = [];
+  var numTrams = allTrams.length;
+  for (var i=0 ; i<numTrams ; i++){
+    if (nextStationIsNode(allTrams[i]) && allTrams[i]!=tram){
+      console.log(allTrams[i].name + " competes with " + tram.name);
+      competitors.push(allTrams[i]);
+    }
+  }
+  return competitors;
+}
+
+
+// this also supports the case where several nodes. dont leave simulatenously
+function hasPriority(tram, competitors){
+  var competingTrams = competitors;
+  //competingTrams.push(tram);
+
+  if (getPrioritaryTram(competingTrams, tram) === tram){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+function getPrioritaryTram(competitors, tram){
+  var prioTram = getDefaultPrioritaryTram(competitors, tram);
+  var prioTramFromRule = getPrioritaryTramFromRule(competitors, tram);
+  if (prioTramFromRule !== null){
+    // Use rule
+    prioTram = prioTramFromRule;
+  }else{
+    console.log("Using default");
+  }
+  console.log(prioTram.name + " has won prio");
+  return prioTram;
+}
+
+function getPrioritaryTramFromRule(competitors, tram){
+  var competingTrams = competitors;
+  competingTrams.push(tram);
+
+  var prioTrams = [];
+  var prioTram = null;
+  var highestNbPassengers = 0;
+  var nbCompetitors = competingTrams.length;
+
+  for (var i=0 ; i<nbCompetitors ; i++){
+    if (competingTrams[i].nbPassengers >= highestNbPassengers){
+      // Low prio number means high prio.
+      highestNbPassengers = competingTrams[i].nbPassengers;
+      prioTrams.push(competingTrams[i]);
+    }
+  }
+  if (prioTrams.length === 1){
+    prioTram = prioTrams[0];
+  }
+  return prioTram;
+}
+
+function getDefaultPrioritaryTram(competitors, tram){
+  var competingTrams = competitors;
+  competingTrams.push(tram);
+
+  var prioTram = competingTrams[0];
+  var highestPrio = prioTram.defaultPriority;
+  var nbCompetitors = competitors.length;
+  for (var i=1 ; i<nbCompetitors ; i++){
+    if (competingTrams[i].defaultPriority < highestPrio) {
+      // Low prio number means high prio.
+      highestPrio = competingTrams[i].defaultPriority;
+      prioTram = competingTrams[i];
+    }
+  }
+  return prioTram;
+}
+
+
+
+
+
+  //var hasPriority = false;
+  //var nbCompetitors = competitors.length;
+  //if (nbCompetitors > 0){
+
+  /*if (strictHigher exists && strictHigher=me){
+    return true
+  }else if (strictHigher exists && strictHigher!=me){
+    return false
+  } else {
+    return highestDefaultPriority
+  }
+
+
+    for (var i=0; i<nbCompetitors ; i++){
+      if (competitors[i].nbPassengers > tram.nbPassengers){
+      // if at least one other competitor has strictly more passengers
+        console.log(tram.name +" has no prio because of " + competitors[i].name);
+        return false;
+      }else{
+        for (var i=0; i<nbCompetitors ; i++){
+        }
+        console.log(tram.name +" has prio");
+        return true;
+        // if no other competitor
+      }
+    }*/
+  //}
+
+  /*var numTrams = allTrams.length;
+  if (isNumPassengersDifferent()){
+
+  }else{
+    var highestPriority = Math.max(tramA.defaultPriority, tramB.defaultPriority, tramC.defaultPriority);
+  }
+  for (var i=0 ; i<numTrams ; i++){
+    //if()
+  }*/

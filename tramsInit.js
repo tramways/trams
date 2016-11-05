@@ -1,4 +1,4 @@
-var tramIterator = 0;
+var priority = 0;
 
 function createTram(name, color, nbPassengers){
 
@@ -7,19 +7,16 @@ function createTram(name, color, nbPassengers){
     color: color,
     nbPassengers: nbPassengers,
     // To determine priority if number of passengers is equal:
-    defaultPriority: tramIterator,
+    defaultPriority: priority,
     // Tram's path on the canvas (series of coordinates):
     path: [],
-    previousStation: 0,
     // Current tram's position on the canvas:
-    position:{
+    position: {
       x: 0,
       y: 0
     }
-    //,
-    //nextStationIndex: 1
   };
-  tramIterator++;
+  priority++;
 
   return newTram;
 }
