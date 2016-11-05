@@ -184,17 +184,25 @@ function checkAllowed(tramA){
   // check number
 }
 
-generateAllTramPaths();
-drawAllTracks();// how can i be sure??? callback?
-drawNode();
+document.getElementById("goButton").onclick = function() {
+  //drawAllTrams();
+  //e.preventDefault();
+  // Erase canvas
+  // reinitialize all stuff
+  generateAllTramPaths();
+  drawAllTracks();// how can i be sure??? callback?
+  drawNode();
 
-//drawAllTrams();
+  tramA.nbPassengers = document.getElementById("nbPassengersA").value;
+  tramB.nbPassengers = document.getElementById("nbPassengersB").value;
+  tramC.nbPassengers = document.getElementById("nbPassengersC").value;
 
-setTimeout(function(){
-    goAllTheWay(tramA);
-    goAllTheWay(tramB);
-    goAllTheWay(tramC);
-}, 500);
+  setTimeout(function(){
+      goAllTheWay(tramA);
+      goAllTheWay(tramB);
+      goAllTheWay(tramC);
+  }, 500);
+};
 
 
 function goAllTheWay(tram){

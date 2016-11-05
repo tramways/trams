@@ -4,5 +4,39 @@
   position: absolute;
   top: 0;
   left: 0;*/
-  background-color: #black;
+  background-color: black;
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+}
+
+h1, h2{
+  text-align: center;
+}
+
+body{
+  font-family: Arial;
+  font-weight: lighter;
+  font-size: 14px;
+}
+
+input{
+  height: 2em;
+  margin: 12px;
+  width: 3em;
+  padding: 2px 4px;
+  border: solid 1px lightgrey;
+  border-radius: 2px;
+}
+
+button{
+  padding: .8em;
+  margin: 6px 0px;
+  font-weight: 600;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: 110%;
+  min-width: 6em;
 }
