@@ -12,9 +12,9 @@ var distanceBetweenStations = Math.floor(canvasWidth/10);
 var paddingCanvas = Math.floor(canvasWidth/10);
 var distanceBetweenTramTracks = Math.floor(canvasWidth/20);
 
-var tramA = createTram("Tramway A", 'red', "123");
-var tramB = createTram("Tramway B", 'blue', "80");
-var tramC = createTram("Tramway C", 'green', "80");
+var tramA = createTram("Tramway A", 'red', 123);
+var tramB = createTram("Tramway B", 'blue', 80);
+var tramC = createTram("Tramway C", 'green', 60);
 
 var allTrams = [tramA, tramB, tramC];
 // how to make it robust?? ie how to make it so, that the node is always on the
@@ -283,7 +283,7 @@ function haltAtStation(tram){
 
 function getHaltDuration(tram){
   var haltDurationX = haltDuration;
-  if (mustWait(tram)){
+  if (mustWaitLonger(tram)){
     haltDurationX += additionalhaltDuration;
   }
   return haltDurationX;
@@ -305,18 +305,62 @@ function getCurrentStationIndex(tram){
   return currentStationIndex;
 }
 
-/*function nextStationIsNode(){
-
-}*/
-
-function mustWait(tram){
+function nextStationIsNode(tram){
   var nextStationIndex = getCurrentStationIndex(tram) + 1;
+  return (tram.path[nextStationIndex].x === node.x)? true:false;
+}
+
+function hasPriority(tram, competitors){
+  var hasPriority = false;
+  var nbCompetitors = competitors.length;
+  //if (nbCompetitors > 0){
+    for (var i=0; i<nbCompetitors ; i++){
+      if (competitors[i].nbPassengers > tram.nbPassengers){
+      // if at least one other competitor has strictly more passengers
+        console.log(tram.name +" has no prio because of " + competitors[i].name);
+        return false;
+      }else{
+        console.log(tram.name +" has prio");
+        return true;
+        // if no other competitor
+      }
+    }
+  //}
+
+  var numTrams = allTrams.length;
+  if (isNumPassengersDifferent()){
+
+  }else{
+    var highestPriority = Math.max(tramA.defaultPriority, tramB.defaultPriority, tramC.defaultPriority);
+  }
+  for (var i=0 ; i<numTrams ; i++){
+    //if()
+  }
+}
+
+function getCompetitors(tram){
+  var competitors = [];
+  var numTrams = allTrams.length;
+  for (var i=0 ; i<numTrams ; i++){
+    if (nextStationIsNode(allTrams[i]) && allTrams[i]!=tram){
+      console.log(allTrams[i].name + " competes with " + tram.name);
+      competitors.push(allTrams[i]);
+    }
+  }
+  return competitors;
+}
+
+function mustWaitLonger(tram){
+  var mustWaitLonger = false;
   // find out the coordinates
-
-  var nextStationIsNode = (tram.path[nextStationIndex].x === node.x)? true:false;
-
-  return nextStationIsNode;
-  //for // other trams
-  //if (tram.path[tram.nextStationIndex].x === node.x)
-  //&& tram != thisTram
+  if (nextStationIsNode(tram)){
+    var competitors = getCompetitors(tram);
+    if (getCompetitors(tram).length !== 0){
+      if (!hasPriority(tram, competitors)){
+        mustWaitLonger = true;
+        console.log(tram.name + " must wait");
+      }
+    }
+  }
+  return mustWaitLonger;
 }
