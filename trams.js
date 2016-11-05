@@ -3,9 +3,11 @@ var haltDuration = 2000;
 var securityHaltDuration = 3000;
 
 // Graphics settings
+var startTimeOut = 2000;
 var tramDotRadius = 6;
 var stationRadius = 4;
 var tracksColor = "#555b67";
+var fillStationsColor = "#282C34";
 var lineWidth = 3;
 ctx.lineWidth = lineWidth;
 var distanceBetweenStations = Math.floor(canvasWidth/10);
@@ -19,7 +21,7 @@ var tramC = createTram("C", "green", 80);
 var allTrams = [tramA, tramB, tramC];
 var nbTrams = allTrams.length;
 
-// Node
+// Node position (=where trams cross)
 var xNode = Math.floor(canvasWidth/2);
 var node = {
   x: xNode,
@@ -52,7 +54,6 @@ function getRandomNbStationsBeforeNode(){
   return 2;
 }
 
-
 function generateAllTramPaths(){
   for (var tramIndex=0 ; tramIndex<nbTrams; tramIndex++){
     generateTramPath(tramIndex, allTrams[tramIndex]);
@@ -66,7 +67,9 @@ function generateTramPath(tramIndex, tram){
   var stationsBefore = getRandomNbStationsBeforeNode();
   var stationsAfter = getRandomNbStationsAfterNode();
 
-  tram.path.push({x: node.x, y: yPosition});
+  tram.path.push({
+    x: node.x,
+    y: yPosition});
 
   for (var i=1 ; i<=stationsBefore ; i++){
     tram.path.unshift({x: node.x - i*distanceBetweenStations, y: yPosition});
@@ -112,9 +115,17 @@ function drawTram(tram){
 }
 
 
+
+function drawAllTracks(){
+  for (var i=0; i<nbTrams ; i++){
+    var tram = allTrams[i];
+    drawTracks(tram);
+  }
+}
+
 function drawTracks(tram){
   ctx.moveTo(tram.path[0].x, tram.path[0].y);
-  //init context
+  //Initialization context
 
   var nbStations = tram.path.length;
   for (var i=0 ; i<nbStations ; i++){
@@ -126,21 +137,9 @@ function drawTracks(tram){
   for (var i=0 ; i<nbStations ; i++){
     ctx.beginPath();
     ctx.arc(tram.path[i].x, tram.path[i].y, stationRadius, 0, 2*Math.PI);
-    ctx.fillStyle = '#282C34';
+    ctx.fillStyle = fillStationsColor;
     ctx.fill();
     ctx.stroke();
-  }
-
-  tram.position = {
-    x: tram.path[0].x,
-    y: tram.path[0].y
-  }
-}
-
-function drawAllTracks(){
-  for (var i=0; i<nbTrams ; i++){
-    var tram = allTrams[i];
-    drawTracks(tram);
   }
 }
 
@@ -164,7 +163,7 @@ document.getElementById("goButton").onclick = function() {
       goAllTheWay(tramA);
       goAllTheWay(tramB);
       goAllTheWay(tramC);
-  }, 2000);
+  }, startTimeOut);
 };
 
 function reinitialize(){
@@ -188,11 +187,9 @@ function initializeTramsPositions(){
   }
 };
 
-
 function getDOMId(tram){
   return "nbPassengers" + tram.id;
 };
-
 
 function goAllTheWay(tram){
     var vx = 1;
