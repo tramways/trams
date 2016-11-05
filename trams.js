@@ -1,4 +1,5 @@
 var haltDuration = 2000;
+var additionalhaltDuration = 3000;
 var tramDotRadius = 6;
 var stationRadius = 4;
 
@@ -43,13 +44,15 @@ function getMaxNumberOfStationsAfterNode(){
 function getRandomNumberOfStationsAfterNode(){
   var min = 1;
   var max = getMaxNumberOfStationsAfterNode();
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  // return Math.floor(Math.random() * (max - min + 1)) + min;
+  return 1;
 }
 
 function getRandomNumberOfStationsBeforeNode(){
   var min = 1;
   var max = getMaxNumberOfStationsBeforeNode();
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  // return Math.floor(Math.random() * (max - min + 1)) + min;
+  return 2;
 }
 
 
@@ -81,7 +84,7 @@ function generateTramPath(tramIndex, tram){
 
 
 function initializePosition(tram){
-  tram.position={
+  tram.position = {
     x: tram.path[0].x,
     y: tram.path[0].y
   };
@@ -198,18 +201,22 @@ function goAllTheWay(tram){
     var vx = 1;
     var vy = 0;
     var myInt = setInterval(function(){
-      if(isAtAStation(tram)){
-        tram.nextStationIndex++;
-        haltAtStation(tram);
+      if(isAtAStation(tram) && !isAtFirstStation(tram)){
+        //tram.nextStationIndex++;
         if (isAtLastStation(tram)){
           clearInterval(myInt);
+        }else{
+          clearInterval(myInt);
+          haltAtStation(tram);
+          //goAllTheWay(tram);
+          // after halt: go all the way
         }
       }else{
         tram.position.x += vx;
         tram.position.y += vy;
       }
       drawTram(tram);
-    }, 1000/20);
+    }, 10);
 }
 
 
@@ -226,6 +233,20 @@ function isAtLastStation(tram){
   }
 }
 
+
+function isAtFirstStation(tram){
+  var xPositionOfStations = [];
+  for (var i=0 ; i<tram.path.length; i++){
+    xPositionOfStations.push(tram.path[i].x);
+  }
+  var k = xPositionOfStations.indexOf(tram.position.x);
+  if (k === 0){
+    return true;
+  }else{
+    return false;
+  }
+}
+
 function isAtAStation(tram){
   var xPositionOfStations = [];
   for (var i=0 ; i<tram.path.length; i++){
@@ -233,6 +254,9 @@ function isAtAStation(tram){
   }
   var k = xPositionOfStations.indexOf(tram.position.x);
   if (k > -1){
+    if (tram === tramA){
+      console.log(tram.name + " is at station " + k);
+    }
     return true;
   }else{
     return false;
@@ -241,18 +265,57 @@ function isAtAStation(tram){
 
 function haltAtStation(tram){
   //console.log(tram.name + " arrived at station " + (x) + " of " + tram.path.length);
-  var haltDurationX = haltDuration;
-  /*if (mustWait(tram)){
-    haltDurationX += 1000;
+  /*if (tram === tramA){
+    console.log(tram.name + ": start halt at " + tram.position.x);
   }*/
+  if (tram === tramA){
+    console.log(tram.name + ": halt is called");
+  }
   setTimeout(function(){
-    tram.position.x += 1;
-  }, haltDurationX);
+    tram.position.x += 1;//tis is called too many times, it just accelerates the tram sometimes
+    goAllTheWay(tram);
+    if (tram === tramA){
+      console.log(tram.name + ": end halt at " + tram.position.x);
+    }
+  }, getHaltDuration(tram));
 }
 
+
+function getHaltDuration(tram){
+  var haltDurationX = haltDuration;
+  if (mustWait(tram)){
+    haltDurationX += additionalhaltDuration;
+  }
+  return haltDurationX;
+}
+
+function getNextStation(tram){
+  var currentStationIndex = getCurrentStationIndex(tram);
+}
+
+function getCurrentStationIndex(tram){
+  // we know it's evaluated when the tram is at a station anyway
+  var currentStationIndex = -1;
+  var nbStations = tram.path.length;
+  for (var i=0 ; i<nbStations ; i++){
+    if (tram.path[i].x === tram.position.x && tram.path[i].y === tram.position.y){
+      currentStationIndex = i;
+    }
+  }
+  return currentStationIndex;
+}
+
+/*function nextStationIsNode(){
+
+}*/
+
 function mustWait(tram){
-  var nextStationIndex = tram.nextStationIndex;
+  var nextStationIndex = getCurrentStationIndex(tram) + 1;
+  // find out the coordinates
+
   var nextStationIsNode = (tram.path[nextStationIndex].x === node.x)? true:false;
+
+  return nextStationIsNode;
   //for // other trams
   //if (tram.path[tram.nextStationIndex].x === node.x)
   //&& tram != thisTram

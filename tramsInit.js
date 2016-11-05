@@ -15,13 +15,16 @@ function createTram(name, color, nbPassengers){
     position:{
       x: 0,
       y: 0
-    },
-    nextStationIndex: 1
+    }
+    //,
+    //nextStationIndex: 1
   };
   tramIterator++;
 
   return newTram;
 }
+
+
 
 
 //stationsDone: 0
