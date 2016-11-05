@@ -96,3 +96,137 @@
     goToNextStation(tram); // needs to be wrapped (closure) otherwise is invoked immediately
   }, stopDuration);
 }*/
+
+
+
+
+
+
+
+  //var hasPriority = false;
+  //var nbCompetitors = competitors.length;
+  //if (nbCompetitors > 0){
+
+  /*if (strictHigher exists && strictHigher=me){
+    return true
+  }else if (strictHigher exists && strictHigher!=me){
+    return false
+  } else {
+    return highestDefaultPriority
+  }
+
+
+    for (var i=0; i<nbCompetitors ; i++){
+      if (competitors[i].nbPassengers > tram.nbPassengers){
+      // if at least one other competitor has strictly more passengers
+        console.log(tram.name +" has no prio because of " + competitors[i].name);
+        return false;
+      }else{
+        for (var i=0; i<nbCompetitors ; i++){
+        }
+        console.log(tram.name +" has prio");
+        return true;
+        // if no other competitor
+      }
+    }*/
+  //}
+
+  /*var numTrams = allTrams.length;
+  if (isNumPassengersDifferent()){
+
+  }else{
+    var highestPriority = Math.max(tramA.defaultPriority, tramB.defaultPriority, tramC.defaultPriority);
+  }
+  for (var i=0 ; i<numTrams ; i++){
+    //if()
+  }*/
+
+
+
+
+
+  function wouldCollide(){
+    // is there a risk of collision?
+    // am I in priority?
+    // what if same?
+  }
+
+  // how to make it robust?? ie how to make it so, that the node is always on the
+  // path  (and forbidden if not on path)
+  // Take a tram
+  // Say 'that Y will be a node'
+  // Use this coordinate for all trams
+  // var nodes= [node];
+    // lines: all
+    // position: xxx
+    // then place the lines accordingly
+
+
+  function continuePath(tram){
+    if(checkAllowed(tram)){
+      // go to next station
+    }else{
+      // wait
+    }
+  }
+
+  function checkAllowed(tramA){
+    return true;
+    // if ((tramA.path[stationsDone +1].isNode
+    // check number
+  }
+
+  //
+  // function getPrioritaryTramFromRule(competitors){
+  //   var prioTram = null;
+  //   var nbCompetitors = competitors.length;
+  //
+  //   var nbsPassengers=[];
+  //   var sortedTrams = [];
+  //
+  //   for (var i=1 ; i<nbCompetitors ; i++){
+  //     nbsPassengers.push(competitors[i].nbPassengers);
+  //   }
+  //   nbsPassengers.sort(function(a, b){
+  //     return b-a
+  //   });
+  //
+  //   for (var i=1 ; i<nbCompetitors ; i++){
+  //     nbsPassengers.push(competitors[i].nbPassengers);
+  //   }
+  //
+  //   if (nbsPassengers[0] > nbsPassengers[1]){
+  //     prioTram =
+  //   }
+  //
+  //   return prioTram;
+  // }
+
+
+  /*function getHaltDuration(tram){
+    var haltDurationX = haltDuration;
+    if (mustWaitLonger(tram)){
+      haltDurationX += additionalhaltDuration;
+    }
+    return haltDurationX;
+  }*/
+
+
+    /*var prioTrams = [];
+    var prioTram = null;
+    var highestNbPassengers = 0;
+    var nbCompetitors = competingTrams.length;
+
+    for (var i=0 ; i<nbCompetitors ; i++){
+      if (competingTrams[i].nbPassengers > highestNbPassengers){
+        highestNbPassengers = competingTrams[i].nbPassengers;
+        prioTram = competingTrams[i];
+      }else if (competingTrams[i].nbPassengers === highestNbPassengers){
+        prioTrams.push(prioTram);
+      }else{
+      }
+    }
+    if (prioTrams.length === 1){
+      prioTram = prioTrams[0];
+    }
+    return prioTram;*/

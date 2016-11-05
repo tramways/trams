@@ -1,9 +1,9 @@
 var priority = 0;
 
-function createTram(name, color, nbPassengers){
-
+function createTram(id, color, nbPassengers){
   var newTram = {
-    name: name,
+    id: id,
+    name: generateNameFromId(id),
     color: color,
     nbPassengers: nbPassengers,
     // To determine priority if number of passengers is equal:
@@ -21,7 +21,6 @@ function createTram(name, color, nbPassengers){
   return newTram;
 }
 
-
-
-
-//stationsDone: 0
+function generateNameFromId(id){
+  return "Tramway " + id;
+}
