@@ -1,12 +1,15 @@
 var startTimeOut = 2000;
 
 // Node position (= where trams cross)
-var xNode = Math.floor(canvasWidth/2);
-var node = {
-  x: xNode
-};
 
 document.getElementById("goButton").onclick = function() {
+
+
+  var canvas = document.getElementById("canvas");
+  var xNode = Math.floor(canvas.width/2);
+  var node = {
+    x: xNode
+  };
 
   tramManager.init();
 
@@ -23,7 +26,7 @@ document.getElementById("goButton").onclick = function() {
 
   renderer.init(trams, node);
   pathGenerator.init(trams, node);
-  tramRouter.init(trams);
+  tramRouter.init(trams, node);
   mover.init(trams);
   userInfo.init();
 

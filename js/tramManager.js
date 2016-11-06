@@ -12,7 +12,7 @@ tramManager = {
   },
 
   init: function(){
-    this.trams = [];
+    this.settings.trams = [];
     s = this.settings;
   },
 

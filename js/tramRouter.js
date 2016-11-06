@@ -8,17 +8,19 @@ var t,
 tramRouter = {
   settings: {
     nbTrams: 0,
-    trams: []
+    trams: [],
+    node: undefined
   },
 
-  init: function(trams){
-    this.initData(trams);
+  init: function(trams, node){
+    this.initData(trams, node);
     t = this.settings;
   },
 
-  initData: function(trams){
+  initData: function(trams, node){
     this.settings.trams = trams;
     this.settings.nbTrams = trams.length;
+    this.settings.node = node;
   },
 
   checkIfAllowedToGo: function(tram){
@@ -135,7 +137,7 @@ tramRouter = {
 
   nextStationIsNode: function(tram){
     var nextStationIndex = this.getCurrentStationIndex(tram) + 1;
-    return (tram.path[nextStationIndex].x === node.x)? true:false;
+    return (tram.path[nextStationIndex].x === t.node.x)? true:false;
   }
 
 };
