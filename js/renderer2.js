@@ -9,6 +9,7 @@ var s,
 renderer = {
 
   settings: {
+    // Trams
     nbTrams: 0,
     trams: [],
     tramDotRadius: 2,
@@ -22,20 +23,27 @@ renderer = {
     nodeColor: 'white',
     nodeTextColor: 'white',
     // Utils
-    font: "1em sans-serif"
-    // numArticles: 5,
-    // articleList: $("#article-list"),
-    // moreButton: $("#more-button")
+    font: "1em sans-serif",
+    node: undefined
+    // articleList: $("#article-list")
   },
 
-  init: function(trams) {
+  init: function(trams, myNode) {
+    this.initCanvas();
+    this.initData(trams, myNode);
+    s = this.settings;
+    //this.bindUIActions();
+  },
+
+  initData: function(trams, myNode){
+    this.settings.trams = trams;
+    this.settings.nbTrams = trams.length;
+    this.settings.node = myNode;
+  },
+
+  initCanvas: function(){
     var canvas = document.getElementById("canvas");
     this.settings.ctx = canvas.getContext("2d");
-    this.settings.trams = trams;
-    this.settings.nbTrams = this.settings.trams.length;
-    s = this.settings;
-
-    //this.bindUIActions();
   },
 
   drawText: function(color, text, x, y){
@@ -107,18 +115,14 @@ renderer = {
   ------ */
 
   drawNode: function(){
-    // Need:
-    // nodePosition
-    // nbTrams
-    // Tram y position
-    // var height = nbTrams*distanceBetweenTramTracks;
+
     var yFirstTram = s.trams[0].path[0].y;
     var yLastTram = s.trams[s.trams.length - 1].path[0].y;
     var rectangleWidth = s.stationRadius*5;
     var rectangleHeight = yLastTram - yFirstTram + rectangleWidth;
 
     var startingPoint = {
-      x: node.x - (rectangleWidth/2),
+      x: s.node.x - (rectangleWidth/2),
       y: yFirstTram - (rectangleWidth/2)
     }
     s.ctx.rect(startingPoint.x, startingPoint.y, rectangleWidth, rectangleHeight);

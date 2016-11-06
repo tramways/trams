@@ -94,7 +94,7 @@ function initializePosition(tram){
 document.getElementById("goButton").onclick = function() {
 
 
-  renderer.init(allTrams);
+  renderer.init(allTrams, node);
   generateAllTramPaths();
 
   initializePosition(tramA);
