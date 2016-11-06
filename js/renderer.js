@@ -49,6 +49,11 @@ renderer = {
     this.settings.ctx = canvas.getContext("2d");
   },
 
+  resetCanvas: function(){
+    var canvas = document.getElementById("canvas");
+    r.ctx.clearRect(0, 0, canvas.width, canvas.height);
+  },
+
   /* ------
   Utils rendering functions
   ------ */

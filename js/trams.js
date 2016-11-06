@@ -1,86 +1,48 @@
-// Functional settings
-var haltDuration = 2000;
-var securityHaltDuration = 3200;
-
-// Graphics settings
 var startTimeOut = 2000;
-
-// Trams
-var defaultNbPassengers = 0;
-var tramA = createTram("A", "#C678DD", defaultNbPassengers);
-var tramB = createTram("B", "#61AFEF", defaultNbPassengers);
-var tramC = createTram("C", "#EEA45F", defaultNbPassengers);
-var allTrams = [tramA, tramB, tramC];
-// var nbTrams = allTrams.length;
 
 // Node position (= where trams cross)
 var xNode = Math.floor(canvasWidth/2);
 var node = {
-  x: xNode,
-  impactedTrams: allTrams
+  x: xNode
 };
-
-
-function initializePosition(tram){
-  tram.position = {
-    x: tram.path[0].x,
-    y: tram.path[0].y
-  };
-}
 
 document.getElementById("goButton").onclick = function() {
 
-  renderer.init(allTrams, node);
-  pathGenerator.init(allTrams, node);
-  tramRouter.init(allTrams);
+  tramManager.init();
+
+  var tramData = [{id: "A", color: "#C678DD"},
+  {id: "B", color: "#61AFEF"},
+  {id: "C", color: "#EEA45F"}];
+
+  for (var k=0; k<tramData.length ; k++){
+    var domId = getDOMId(tramData[k].id);
+    tramData[k].nbPassengers = document.getElementById(domId).value;
+    tramManager.create(tramData[k].id, tramData[k].color, tramData[k].nbPassengers);
+  }
+  var trams = tramManager.getAllTrams();
+
+  renderer.init(trams, node);
+  pathGenerator.init(trams, node);
+  tramRouter.init(trams);
+  mover.init(trams);
   userInfo.init();
-  mover.init();
+
+  userInfo.printInfo("About to start...");
 
   pathGenerator.generateAllTramPaths();
-
-  initializePosition(tramA);
-  initializePosition(tramB);
-  initializePosition(tramC);
-  reinitialize();
+  mover.initAllPositions();
+  renderer.resetCanvas();
 
   renderer.drawAll();
 
   setTimeout(function(){
-      mover.goAllTheWay(tramA);
-      mover.goAllTheWay(tramB);
-      mover.goAllTheWay(tramC);
+    userInfo.printInfo("... Starting!");
+    for (var i=0 ; i<nbTrams ; i++){
+      mover.goAllTheWay(trams[i]);
+    }
   }, startTimeOut);
 };
 
-function reinitialize(){
-  reinitializeCanvas();
-  reinitializeTrams();
-  // reinitializeIntervals();
-}
-
-function reinitializeCanvas(){
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-function reinitializeTrams(){
-  reinitializeTramsNbPassengers();
-  reinitializeTramsPositions();
-}
-
-function reinitializeTramsNbPassengers(){
-  for (var i=0 ; i<nbTrams ; i++){
-    var domId = getDOMId(allTrams[i]);
-    allTrams[i].nbPassengers = document.getElementById(domId).value;
-  }
-};
-
-
-function reinitializeTramsPositions(){
-  for (var i=0 ; i<nbTrams ; i++){
-    initializePosition(allTrams[i]);
-  }
-};
-
-function getDOMId(tram){
-  return "nbPassengers" + tram.id;
+function getDOMId(id){
+  return "nbPassengers" + id;
 };

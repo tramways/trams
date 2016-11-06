@@ -1,16 +1,26 @@
 /* ---------------------------
   mover.js:
-  Deals with tram motion
+  Deals with tram motion, speeds, etc.
 --------------------------- */
 
 var m,
 mover = {
+
   settings: {
-    //infoDiv: document.getElementById("infoStatus")
+    nbTrams: 0,
+    trams: [],
+    haltDuration: 2000,
+    securityHaltDuration: 3200
   },
 
-  init: function(){
+  init: function(trams){
+    this.initData(trams);
     m = this.settings;
+  },
+
+  initData: function(trams){
+    this.settings.trams = trams;
+    this.settings.nbTrams = trams.length;
   },
 
   goAllTheWay: function(tram){
@@ -68,17 +78,30 @@ mover = {
       setTimeout(function(){
         tram.position.x += 1;//this is called too many times, it just accelerates the tram sometimes
         mover.goAllTheWay(tram);
-      }, haltDuration);
+      }, m.haltDuration);
     }else{
       setTimeout(function(){
         mover.haltAtStation(tram);
-      }, securityHaltDuration);// will get too much
+      }, m.securityHaltDuration);// will get too much
     }
     /*setTimeout(function(){
       tram.position.x += 1;//this is called too many times, it just accelerates the tram sometimes
       goAllTheWay(tram);
     }, getHaltDuration(tram));*/
 
+  },
+
+  initAllPositions: function(){
+    for (var i=0 ; i< m.nbTrams ; i++){
+      this.initPosition(m.trams[i]);
+    }
+  },
+
+  initPosition: function(tram){
+      tram.position = {
+        x: tram.path[0].x,
+        y: tram.path[0].y
+      };
   }
 
 
