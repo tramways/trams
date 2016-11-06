@@ -1,7 +1,7 @@
 /* ---------------------------
-  renderer.js:
-  All rendering settings and
-  canvas rendering functions.
+  renderer:
+  All canvas rendering settings
+  and functions.
 --------------------------- */
 
 var r,
@@ -26,6 +26,10 @@ renderer = {
     node: undefined
     // articleList: $("#article-list")
   },
+
+  /* ------
+  Init
+  ------ */
 
   init: function(trams, myNode) {
     this.initCanvas();
@@ -53,6 +57,12 @@ renderer = {
     r.ctx.fillStyle = color;
     r.ctx.font = r.font;
     r.ctx.fillText(text, x, y);
+  },
+
+  drawAll: function(){
+    this.drawAllTracks();
+    this.drawNode();
+    this.drawAllTrams();
   },
 
   /* ------
@@ -101,9 +111,9 @@ renderer = {
   Render tram
   ------ */
 
-  drawtrams: function(){
-    for (var i=0 ; i<s.nbTrams ; i++){
-      drawTram(s.trams[i]);
+  drawAllTrams: function(){
+    for (var i=0 ; i<r.nbTrams ; i++){
+      this.drawTram(r.trams[i]);
     }
   },
 
@@ -121,23 +131,49 @@ renderer = {
   ------ */
 
   drawNode: function(){
+    var width = this.getNodeRectangleWidth();
+    var height = this.getNodeRectangleHeight();
+    var startingPoint = this.getNodeRectangleStartingPoint();
 
-    var yFirstTram = r.trams[0].path[0].y;
-    var yLastTram = r.trams[r.trams.length - 1].path[0].y;
-    var rectangleWidth = r.stationRadius*5;
-    var rectangleHeight = yLastTram - yFirstTram + rectangleWidth;
+    this.drawNodeRectangle(startingPoint, width, height);
+    this.drawNodeName("Cross", startingPoint);
+  },
 
-    var startingPoint = {
-      x: r.node.x - (rectangleWidth/2),
-      y: yFirstTram - (rectangleWidth/2)
-    }
-    r.ctx.rect(startingPoint.x, startingPoint.y, rectangleWidth, rectangleHeight);
+  drawNodeRectangle: function(startingPoint, width, height){
+    r.ctx.rect(startingPoint.x, startingPoint.y, width, height);
     r.ctx.lineCap = 'round';
     r.ctx.strokeStyle = r.nodeColor;
     r.ctx.lineWidth = r.lineWidthNode;
     r.ctx.stroke();
+  },
 
-    this.drawText(r.nodeTextColor, "Cross", startingPoint.x -8, startingPoint.y -10);
+  drawNodeName: function(nodeName, startingPoint){
+    this.drawText(r.nodeTextColor, nodeName, startingPoint.x -8, startingPoint.y -10);
+  },
+
+  getYFirstTram: function(){
+    return r.trams[0].path[0].y;
+  },
+
+  getNodeRectangleWidth: function(){
+    return r.stationRadius*5;
+  },
+
+  getNodeRectangleHeight: function(){
+    var yFirstTram = r.trams[0].path[0].y;
+    var yLastTram = r.trams[r.trams.length - 1].path[0].y;
+    var rectangleWidth = this.getNodeRectangleWidth();
+    return yLastTram - yFirstTram + rectangleWidth;
+  },
+
+  getNodeRectangleStartingPoint: function(){
+    var rectangleWidth = this.getNodeRectangleWidth();
+    var yFirstTram = this.getYFirstTram();
+    var startingPoint = {
+      x: r.node.x - (rectangleWidth/2),
+      y: yFirstTram - (rectangleWidth/2)
+    }
+    return startingPoint;
   }
 
   // bindUIActions: function() {

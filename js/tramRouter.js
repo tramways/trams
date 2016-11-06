@@ -1,5 +1,5 @@
 /* ---------------------------
-  tramRouter.js:
-  Contains all the logics for
+  tramRouter:
+  All the logics for
   tram prioritization (= business logics)
 --------------------------- */

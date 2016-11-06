@@ -93,7 +93,7 @@ function initializePosition(tram){
 
 document.getElementById("goButton").onclick = function() {
 
-
+  userInfo.init();
   renderer.init(allTrams, node);
   generateAllTramPaths();
 
@@ -102,27 +102,7 @@ document.getElementById("goButton").onclick = function() {
   initializePosition(tramC);
   reinitialize();
 
-
-
-  renderer.drawAllTracks();
-  renderer.drawNode();
-  // renderer.drawAllTrams();
-  renderer.drawTram(tramA);
-  renderer.drawTram(tramB);
-  renderer.drawTram(tramC);
-
-  // generateAllTramPaths();
-  // initializePosition(tramA);
-  // initializePosition(tramB);
-  // initializePosition(tramC);
-  // reinitialize();
-  //
-  // drawAllTracks();
-  // drawNode();
-
-  // drawTram(tramA);
-  // drawTram(tramB);
-  // drawTram(tramC);
+  renderer.drawAll();
 
   setTimeout(function(){
       goAllTheWay(tramA);
@@ -301,7 +281,7 @@ function getPrioritaryTram(competitors, tram){
     // Use rule
     prioTram = prioTramFromRule;
   }else{
-    printInfo("Using default");
+    userInfo.printInfo("Using default");
   }
 
   return prioTram;
