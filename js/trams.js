@@ -4,10 +4,10 @@ var securityHaltDuration = 3000;
 
 // Graphics settings
 var startTimeOut = 2000;
-var distanceBetweenStations = Math.floor(canvasWidth/6);
-var horizontalPaddingCanvas = Math.floor(canvasWidth/20);
-var verticalPaddingCanvas = Math.floor(canvasWidth/10);
-var distanceBetweenTramTracks = Math.floor(canvasWidth/10);
+// var distanceBetweenStations = Math.floor(canvasWidth/6);
+// var horizontalPaddingCanvas = Math.floor(canvasWidth/20);
+// var verticalPaddingCanvas = Math.floor(canvasWidth/10);
+// var distanceBetweenTramTracks = Math.floor(canvasWidth/10);
 
 // Trams
 var defaultNbPassengers = 0;
@@ -24,65 +24,65 @@ var node = {
   impactedTrams: allTrams
 };
 
-function getMaxNbStationsBeforeNode(){
-  var availableHorizontalSpace = Math.abs(node.x - horizontalPaddingCanvas);
-  var maxNb = Math.floor(availableHorizontalSpace/distanceBetweenStations);
-  return maxNb;
-}
+// function getMaxNbStationsBeforeNode(){
+//   var availableHorizontalSpace = Math.abs(node.x - horizontalPaddingCanvas);
+//   var maxNb = Math.floor(availableHorizontalSpace/distanceBetweenStations);
+//   return maxNb;
+// }
+//
+// function getMaxNbStationsAfterNode(){
+//   var availableHorizontalSpace = (canvasWidth - node.x) - horizontalPaddingCanvas;
+//   var maxNb = Math.floor(availableHorizontalSpace/distanceBetweenStations);
+//   return maxNb;
+// }
+//
+// function getRandomNbStationsAfterNode(){
+//   var min = 1;
+//   var max = getMaxNbStationsAfterNode();
+//   // return Math.floor(Math.random() * (max - min + 1)) + min;
+//   return 2;
+// }
+//
+// function getRandomNbStationsBeforeNode(){
+//   var min = 1;
+//   var max = getMaxNbStationsBeforeNode();
+//   //return Math.floor(Math.random() * (max - min + 1)) + min;
+//   return 2;
+// }
 
-function getMaxNbStationsAfterNode(){
-  var availableHorizontalSpace = (canvasWidth - node.x) - horizontalPaddingCanvas;
-  var maxNb = Math.floor(availableHorizontalSpace/distanceBetweenStations);
-  return maxNb;
-}
+// function generateAllTramPaths(){
+//   for (var tramIndex=0 ; tramIndex<nbTrams; tramIndex++){
+//     resetPath(allTrams[tramIndex]);
+//     generatePath(tramIndex, allTrams[tramIndex]);
+//   }
+// }
 
-function getRandomNbStationsAfterNode(){
-  var min = 1;
-  var max = getMaxNbStationsAfterNode();
-  // return Math.floor(Math.random() * (max - min + 1)) + min;
-  return 2;
-}
-
-function getRandomNbStationsBeforeNode(){
-  var min = 1;
-  var max = getMaxNbStationsBeforeNode();
-  //return Math.floor(Math.random() * (max - min + 1)) + min;
-  return 2;
-}
-
-function generateAllTramPaths(){
-  for (var tramIndex=0 ; tramIndex<nbTrams; tramIndex++){
-    resetPath(allTrams[tramIndex]);
-    generatePath(tramIndex, allTrams[tramIndex]);
-  }
-}
-
-function resetPath(tram){
-  tram.path=[];
-}
-
-function generatePath(tramIndex, tram){
-  // H: tram always crosses
-  // if tram doesn't cross, don't show it!!! simple :)
-
-  // need distanceBetweenTramTracks, verticalPaddingCanvas, node,
-  // distanceBetweenStations
-
-  var yPosition = (tramIndex*distanceBetweenTramTracks) + verticalPaddingCanvas;
-  var stationsBefore = getRandomNbStationsBeforeNode();
-  var stationsAfter = getRandomNbStationsAfterNode();
-
-  tram.path.push({
-    x: node.x,
-    y: yPosition});
-
-  for (var i=1 ; i<=stationsBefore ; i++){
-    tram.path.unshift({x: node.x - i*distanceBetweenStations, y: yPosition});
-  }
-  for (var j=1 ; j<=stationsAfter ; j++){
-    tram.path.push({x: node.x + j*distanceBetweenStations, y: yPosition});
-  }
-}
+// function resetPath(tram){
+//   tram.path=[];
+// }
+//
+// function generatePath(tramIndex, tram){
+//   // H: tram always crosses
+//   // if tram doesn't cross, don't show it!!! simple :)
+//
+//   // need distanceBetweenTramTracks, verticalPaddingCanvas, node,
+//   // distanceBetweenStations
+//
+//   var yPosition = (tramIndex*distanceBetweenTramTracks) + verticalPaddingCanvas;
+//   var stationsBefore = getRandomNbStationsBeforeNode();
+//   var stationsAfter = getRandomNbStationsAfterNode();
+//
+//   tram.path.push({
+//     x: node.x,
+//     y: yPosition});
+//
+//   for (var i=1 ; i<=stationsBefore ; i++){
+//     tram.path.unshift({x: node.x - i*distanceBetweenStations, y: yPosition});
+//   }
+//   for (var j=1 ; j<=stationsAfter ; j++){
+//     tram.path.push({x: node.x + j*distanceBetweenStations, y: yPosition});
+//   }
+// }
 
 function initializePosition(tram){
   tram.position = {
@@ -95,7 +95,9 @@ document.getElementById("goButton").onclick = function() {
 
   userInfo.init();
   renderer.init(allTrams, node);
-  generateAllTramPaths();
+  pathGenerator.init(allTrams, node);
+  //generateAllTramPaths();
+  pathGenerator.generateAllTramPaths();
 
   initializePosition(tramA);
   initializePosition(tramB);
