@@ -4,8 +4,7 @@
   canvas rendering functions.
 --------------------------- */
 
-
-var s,
+var r,
 renderer = {
 
   settings: {
@@ -31,7 +30,7 @@ renderer = {
   init: function(trams, myNode) {
     this.initCanvas();
     this.initData(trams, myNode);
-    s = this.settings;
+    r = this.settings;
     //this.bindUIActions();
   },
 
@@ -46,15 +45,23 @@ renderer = {
     this.settings.ctx = canvas.getContext("2d");
   },
 
+  /* ------
+  Utils rendering functions
+  ------ */
+
   drawText: function(color, text, x, y){
-    s.ctx.fillStyle = color;
-    s.ctx.font = s.font;
-    s.ctx.fillText(text, x, y);
+    r.ctx.fillStyle = color;
+    r.ctx.font = r.font;
+    r.ctx.fillText(text, x, y);
   },
 
+  /* ------
+  Render tracks
+  ------ */
+
   drawAllTracks: function(){
-    for (var i=0; i<s.nbTrams ; i++){
-      var tram = s.trams[i];
+    for (var i=0; i<r.nbTrams ; i++){
+      var tram = r.trams[i];
       this.drawTracks(tram);
     }
   },
@@ -67,29 +74,28 @@ renderer = {
 
   drawRailway: function(tram){
     var nbStations = tram.getNbStations();
-    s.ctx.moveTo(tram.path[0].x, tram.path[0].y);
-    s.ctx.strokeStyle = s.tracksColor;
-    s.ctx.lineWidth = s.lineWidthRailway;
-    s.ctx.lineTo(tram.path[nbStations -1].x, tram.path[nbStations -1].y);
-    s.ctx.stroke();
+    r.ctx.moveTo(tram.path[0].x, tram.path[0].y);
+    r.ctx.strokeStyle = r.tracksColor;
+    r.ctx.lineWidth = r.lineWidthRailway;
+    r.ctx.lineTo(tram.path[nbStations -1].x, tram.path[nbStations -1].y);
+    r.ctx.stroke();
   },
 
   drawStations: function(tram){
     var nbStations = tram.getNbStations();
     for (var i=0 ; i<nbStations ; i++){
-      s.ctx.beginPath();
-      s.ctx.arc(tram.path[i].x, tram.path[i].y, s.stationRadius, 0, 2*Math.PI);
-      s.ctx.strokeStyle = s.tracksColor;
-      s.ctx.fillStyle = s.fillStationsColor;
-      s.ctx.fill();
-      s.ctx.stroke();
+      r.ctx.beginPath();
+      r.ctx.arc(tram.path[i].x, tram.path[i].y, r.stationRadius, 0, 2*Math.PI);
+      r.ctx.strokeStyle = r.tracksColor;
+      r.ctx.fillStyle = r.fillStationsColor;
+      r.ctx.fill();
+      r.ctx.stroke();
     }
   },
 
   drawName: function(tram){
     this.drawText(tram.color, tram.name, tram.path[0].x -60, tram.path[0].y +4);
   },
-
 
   /* ------
   Render tram
@@ -104,10 +110,10 @@ renderer = {
   drawTram: function(tram){
     // The tram is drawn as a point.
     // ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    s.ctx.beginPath();
-    s.ctx.arc(tram.position.x, tram.position.y, s.tramDotRadius, 0, 2*Math.PI);
-    s.ctx.fillStyle = tram.color;
-    s.ctx.fill();
+    r.ctx.beginPath();
+    r.ctx.arc(tram.position.x, tram.position.y, r.tramDotRadius, 0, 2*Math.PI);
+    r.ctx.fillStyle = tram.color;
+    r.ctx.fill();
   },
 
   /* ------
@@ -116,26 +122,26 @@ renderer = {
 
   drawNode: function(){
 
-    var yFirstTram = s.trams[0].path[0].y;
-    var yLastTram = s.trams[s.trams.length - 1].path[0].y;
-    var rectangleWidth = s.stationRadius*5;
+    var yFirstTram = r.trams[0].path[0].y;
+    var yLastTram = r.trams[r.trams.length - 1].path[0].y;
+    var rectangleWidth = r.stationRadius*5;
     var rectangleHeight = yLastTram - yFirstTram + rectangleWidth;
 
     var startingPoint = {
-      x: s.node.x - (rectangleWidth/2),
+      x: r.node.x - (rectangleWidth/2),
       y: yFirstTram - (rectangleWidth/2)
     }
-    s.ctx.rect(startingPoint.x, startingPoint.y, rectangleWidth, rectangleHeight);
-    s.ctx.lineCap = 'round';
-    s.ctx.strokeStyle = s.nodeColor;
-    s.ctx.lineWidth = s.lineWidthNode;
-    s.ctx.stroke();
+    r.ctx.rect(startingPoint.x, startingPoint.y, rectangleWidth, rectangleHeight);
+    r.ctx.lineCap = 'round';
+    r.ctx.strokeStyle = r.nodeColor;
+    r.ctx.lineWidth = r.lineWidthNode;
+    r.ctx.stroke();
 
-    this.drawText(s.nodeTextColor, "Cross", startingPoint.x -8, startingPoint.y -10);
+    this.drawText(r.nodeTextColor, "Cross", startingPoint.x -8, startingPoint.y -10);
   }
 
   // bindUIActions: function() {
-  //   s.moreButton.on("click", function() {
+  //   r.moreButton.on("click", function() {
   //     NewsWidget.getMoreArticles(s.numArticles);
   //   });
   // },
