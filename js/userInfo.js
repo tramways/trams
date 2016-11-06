@@ -1,6 +1,6 @@
 /* ---------------------------
-  info.js:
-  Displays information fot the user
+  userInfo:
+  Displays information in the html
   about the tram status.
 --------------------------- */
 
