@@ -43,7 +43,8 @@ document.getElementById("goButton").onclick = function() {
   userInfo.printInfo("About to start...", false);
 
   //pathGenerator.generateAllTramPaths();
-  pathGenerator.generateAllTramPathsBis(1);
+
+  pathGenerator.generateAllTramPathsBis(getMode());
 
   mover.initAllPositions();
   renderer.resetCanvas();
@@ -61,3 +62,11 @@ document.getElementById("goButton").onclick = function() {
 function getDOMId(id){
   return "nbPassengers" + id;
 };
+
+function getMode(){
+  var mode = 0;
+  if (document.getElementById("some").checked){
+    mode = 1;
+  }
+  return mode;
+}
