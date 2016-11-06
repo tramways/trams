@@ -22,5 +22,5 @@ function createTram(id, color, nbPassengers){
 }
 
 function generateNameFromId(id){
-  return "Tramway " + id;
+  return "Tram " + id;
 }

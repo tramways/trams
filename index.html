@@ -3,23 +3,46 @@
   <head>
     <meta charset="utf-8">
     <title>BVG trams</title>
-    <link rel="stylesheet" href="styles.css" media="screen">
+    <link rel="stylesheet" href="/css/styles.css" media="screen">
     <!--<link rel='shortcut icon' type='image/x-icon' href='favicon.ico'/>-->
-    <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="/img/favicon.png"/>
+    <link href="https://fonts.googleapis.com/css?family=Armata" rel="stylesheet">
   </head>
   <body>
-    <h1>Trams & Tracks</h1>
-    <h2>A Bonial game</h2>
-    <canvas id="canvas" width="900" height="280"></canvas>
-    <form>
-      Passengers in Tram A: <input type="number" name="nbPassengersA" min="0" value="120" step="10" id="nbPassengersA"><br>
-      Passengers in Tram B: <input type="number" name="nbPassengersB" min="0" value="140" step="10" id="nbPassengersB"><br>
-      Passengers in Tram C: <input type="number" name="nbPassengersC" min="0" value="100" step="10" id="nbPassengersC"><br>
-      <button id="goButton" type="button" value="Go">Go</button>
-    </form>
+    <div class="header">
+      <h1>Trams & Tracks ‧ A Bonial game</h1>
+    </div>
+    <div class="container">
+      <div class="canvasContainer">
+        <canvas id="canvas" width="900" height="450"></canvas>
+      </div>
+      <form>
+        <div class="nbPassengersSettings">
+          <h3>Number of passengers:</h3>
+          In Tram A: <input type="number" name="nbPassengersA" min="0" value="120" step="10" id="nbPassengersA"><br>
+          In Tram B: <input type="number" name="nbPassengersB" min="0" value="140" step="10" id="nbPassengersB"><br>
+          In Tram C: <input type="number" name="nbPassengersC" min="0" value="100" step="10" id="nbPassengersC"><br>
+        </div>
+        <div class="competeSettings">
+          <h3>Trams that should compete:</h3>
+            <input type="radio" name="compete" value="all" checked>All<br>
+            <input type="radio" name="compete" value="none">None<br>
+            <input type="radio" name="compete" value="AB">A and B<br>
+            <input type="radio" name="compete" value="AC">A and C<br>
+            <input type="radio" name="compete" value="BC">B and C<br>
+        </div>
+        <div class="buttonContainer">
+          <button id="goButton" type="button" value="Go">Go</button>
+        </div>
+      </form>
+    </div>
 
-    <script src="canvasInit.js"></script>
-    <script src="tramsInit.js"></script>
-    <script src="trams.js"></script>
+    <p id="infoStatus">Hello World!</p>
+
+    <script src="js/canvasInit.js"></script>
+    <script src="js/render.js"></script>
+    <script src="js/tramsInit.js"></script>
+    <script src="js/trams.js"></script>
+    <script src="js/info.js"></script>
   </body>
 </html>

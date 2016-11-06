@@ -4,24 +4,27 @@ var securityHaltDuration = 3000;
 
 // Graphics settings
 var startTimeOut = 2000;
-var tramDotRadius = 6;
 var stationRadius = 4;
-var tracksColor = "#555b67";
+var tracksColor = "#ABB2BF";
 var fillStationsColor = "#282C34";
 var lineWidth = 3;
 ctx.lineWidth = lineWidth;
-var distanceBetweenStations = Math.floor(canvasWidth/10);
-var paddingCanvas = Math.floor(canvasWidth/10);
-var distanceBetweenTramTracks = Math.floor(canvasWidth/20);
+var distanceBetweenStations = Math.floor(canvasWidth/6);
+var horizontalPaddingCanvas = Math.floor(canvasWidth/20);
+var verticalPaddingCanvas = Math.floor(canvasWidth/10);
+var distanceBetweenTramTracks = Math.floor(canvasWidth/10);
+var nodeColor = 'white';
+var nodeTextColor = nodeColor;
 
 // Trams
-var tramA = createTram("A", "red", 10);
-var tramB = createTram("B", "blue", 10);
-var tramC = createTram("C", "green", 80);
+var defaultNbPassengers = 0;
+var tramA = createTram("A", "#C678DD", defaultNbPassengers);
+var tramB = createTram("B", "#61AFEF", defaultNbPassengers);
+var tramC = createTram("C", "#EEA45F", defaultNbPassengers);
 var allTrams = [tramA, tramB, tramC];
 var nbTrams = allTrams.length;
 
-// Node position (=where trams cross)
+// Node position (= where trams cross)
 var xNode = Math.floor(canvasWidth/2);
 var node = {
   x: xNode,
@@ -29,13 +32,13 @@ var node = {
 };
 
 function getMaxNbStationsBeforeNode(){
-  var availableHorizontalSpace = Math.abs(node.x - paddingCanvas);
+  var availableHorizontalSpace = Math.abs(node.x - horizontalPaddingCanvas);
   var maxNb = Math.floor(availableHorizontalSpace/distanceBetweenStations);
   return maxNb;
 }
 
 function getMaxNbStationsAfterNode(){
-  var availableHorizontalSpace = (canvasWidth - node.x) - paddingCanvas;
+  var availableHorizontalSpace = (canvasWidth - node.x) - horizontalPaddingCanvas;
   var maxNb = Math.floor(availableHorizontalSpace/distanceBetweenStations);
   return maxNb;
 }
@@ -56,14 +59,19 @@ function getRandomNbStationsBeforeNode(){
 
 function generateAllTramPaths(){
   for (var tramIndex=0 ; tramIndex<nbTrams; tramIndex++){
-    generateTramPath(tramIndex, allTrams[tramIndex]);
+    resetPath(allTrams[tramIndex]);
+    generatePath(tramIndex, allTrams[tramIndex]);
   }
 }
 
-function generateTramPath(tramIndex, tram){
+function resetPath(tram){
+  tram.path=[];
+}
+
+function generatePath(tramIndex, tram){
   // H: tram always crosses
   // if tram doesn't cross, don't show it!!! simple :)
-  var yPosition = (tramIndex*distanceBetweenTramTracks) + paddingCanvas;
+  var yPosition = (tramIndex*distanceBetweenTramTracks) + verticalPaddingCanvas;
   var stationsBefore = getRandomNbStationsBeforeNode();
   var stationsAfter = getRandomNbStationsAfterNode();
 
@@ -100,19 +108,23 @@ function drawNode(){
   }
   ctx.rect(startingPoint.x, startingPoint.y, rectangleWidth, rectangleHeight);
   ctx.lineCap = 'round';
-  ctx.strokeStyle = 'white';
+  ctx.strokeStyle = nodeColor;
   ctx.lineWidth = 1;
   ctx.stroke();
+
+  ctx.fillStyle = nodeTextColor;
+  ctx.font = ".8em sans-serif";
+  ctx.fillText("Cross", startingPoint.x -4, startingPoint.y -10);
 }
 
-function drawTram(tram){
-  // The tram is drawn as a point.
-  //ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-  ctx.beginPath();
-  ctx.arc(tram.position.x, tram.position.y, tramDotRadius, 0, 2*Math.PI);
-  ctx.fillStyle = tram.color;
-  ctx.fill();
-}
+// function drawTram(tram){
+//   // The tram is drawn as a point.
+//   // ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+//   ctx.beginPath();
+//   ctx.arc(tram.position.x, tram.position.y, tramDotRadius, 0, 2*Math.PI);
+//   ctx.fillStyle = tram.color;
+//   ctx.fill();
+// }
 
 
 
@@ -123,25 +135,30 @@ function drawAllTracks(){
   }
 }
 
-function drawTracks(tram){
-  ctx.moveTo(tram.path[0].x, tram.path[0].y);
-  //Initialization context
-
-  var nbStations = tram.path.length;
-  for (var i=0 ; i<nbStations ; i++){
-    ctx.strokeStyle = tracksColor;
-    ctx.lineTo(tram.path[i].x, tram.path[i].y);
-    ctx.stroke();
-  }
-
-  for (var i=0 ; i<nbStations ; i++){
-    ctx.beginPath();
-    ctx.arc(tram.path[i].x, tram.path[i].y, stationRadius, 0, 2*Math.PI);
-    ctx.fillStyle = fillStationsColor;
-    ctx.fill();
-    ctx.stroke();
-  }
-}
+// function drawTracks(tram){
+//   ctx.moveTo(tram.path[0].x, tram.path[0].y);
+//   //Initialization context
+//
+//   var nbStations = tram.path.length;
+//
+//   ctx.strokeStyle = tracksColor;
+//   ctx.lineWidth = 1;
+//   ctx.lineTo(tram.path[nbStations -1].x, tram.path[nbStations -1].y);
+//   ctx.stroke();
+//
+//   for (var i=0 ; i<nbStations ; i++){
+//     ctx.beginPath();
+//     ctx.arc(tram.path[i].x, tram.path[i].y, stationRadius, 0, 2*Math.PI);
+//     ctx.strokeStyle = tracksColor;
+//     ctx.fillStyle = fillStationsColor;
+//     ctx.fill();
+//     ctx.stroke();
+//   }
+//
+//   ctx.fillStyle = tram.color;
+//   ctx.font = "1em sans-serif";
+//   ctx.fillText(tram.name, tram.path[0].x -60, tram.path[0].y +4);
+// }
 
 
 function drawAllTrams(){
@@ -159,6 +176,10 @@ document.getElementById("goButton").onclick = function() {
   drawAllTracks();// how can i be sure??? callback?
   drawNode();
 
+  drawTram(tramA);
+  drawTram(tramB);
+  drawTram(tramC);
+
   setTimeout(function(){
       goAllTheWay(tramA);
       goAllTheWay(tramB);
@@ -168,9 +189,14 @@ document.getElementById("goButton").onclick = function() {
 
 function reinitialize(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  //??? works
   initializeTramsNbPassengers();
   initializeTramsPositions();
+  initializeIntervals();
+}
+
+function initializeIntervals(){
+//
 }
 
 function initializeTramsNbPassengers(){
@@ -211,6 +237,7 @@ function goAllTheWay(tram){
       }
       drawTram(tram);
     }, 10);
+    return myInt;
 }
 
 
@@ -327,7 +354,7 @@ function getPrioritaryTram(competitors, tram){
     // Use rule
     prioTram = prioTramFromRule;
   }else{
-    console.log("Using default");
+    printInfo("Using default");
   }
 
   return prioTram;
@@ -372,7 +399,7 @@ function getDefaultPrioritaryTram(competitors, tram){
   var nbCompetitors = competitors.length;
   for (var i=1 ; i<nbCompetitors ; i++){
     if (competingTrams[i].defaultPriority < highestPrio) {
-      // Low prio number means high prio.
+      // < because (Lowest prio number = Highest prio)
       highestPrio = competingTrams[i].defaultPriority;
       prioTram = competingTrams[i];
     }
