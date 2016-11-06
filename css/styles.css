@@ -119,3 +119,7 @@ button{
 .centered{
   text-align:center;
 }
+
+.marginTop{
+  margin-top: 2em;
+}
