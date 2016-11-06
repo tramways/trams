@@ -37,7 +37,7 @@ pathGenerator = {
     this.settings.distanceBtwTracks = Math.floor(canvas.width/10);
     this.settings.hPaddingCanvas = Math.floor(canvas.width/20);
     this.settings.vPaddingCanvas = Math.floor(canvas.width/10);
-    this.settings.distanceBtwStations = Math.floor(canvas.width/10);
+    this.settings.distanceBtwStations = Math.floor(canvas.width/6);
   },
 
   initData: function(trams, myNode){
@@ -112,7 +112,6 @@ pathGenerator = {
     var min = 2;
     var max = this.getMaxNbStationsBeforeNode();
     return Math.floor(Math.random() * (max - min + 1)) + min;
-    //return 2;
   },
 
 
@@ -127,7 +126,7 @@ pathGenerator = {
           }
           break;
       case 1:
-          // Only two of them (A and B in this example)
+          // Only two of them (B and C in this example)
           stationsBefore = [stationBefore-1, stationBefore, stationBefore];
           break;
       default:

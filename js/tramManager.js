@@ -13,10 +13,19 @@ tramManager = {
 
   init: function(){
     s = this.settings;
+    this.resetAllIntervals();
+    this.resetTrams();
   },
 
   resetTrams: function(){
     this.settings.trams = [];
+  },
+
+  resetAllIntervals(){
+    nbTrams = s.trams.length;
+    for(var i=0; i<nbTrams ; i++){
+        clearInterval(trams[i].myInterval);
+    }
   },
 
   create: function(id, color, nbPassengers){

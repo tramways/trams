@@ -8,6 +8,7 @@ var r,
 renderer = {
 
   settings: {
+    ctx: undefined,
     // Trams
     nbTrams: 0,
     trams: [],
@@ -186,10 +187,4 @@ renderer = {
   //     NewsWidget.getMoreArticles(s.numArticles);
   //   });
   // },
-
-  // getMoreArticles: function(numToGet) {
-  //   // $.ajax or something
-  //   // using numToGet as param
-  // }
-
 };

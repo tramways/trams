@@ -13,6 +13,10 @@ mover = {
     securityHaltDuration: 3000
   },
 
+  /* ------
+  Init
+  ------ */
+
   init: function(trams){
     this.initData(trams);
     m = this.settings;
@@ -22,6 +26,23 @@ mover = {
     this.settings.trams = trams;
     this.settings.nbTrams = trams.length;
   },
+
+  initAllPositions: function(){
+    for (var i=0 ; i< m.nbTrams ; i++){
+      this.initPosition(m.trams[i]);
+    }
+  },
+
+  initPosition: function(tram){
+      tram.position = {
+        x: tram.path[0].x,
+        y: tram.path[0].y
+      };
+  },
+
+  /* ------
+  Move
+  ------ */
 
   goAllTheWay: function(tram){
     tram.myInterval = setInterval(function(){
@@ -46,6 +67,25 @@ mover = {
     tram.position.y += vy;
   },
 
+  haltAtStation: function(tram){
+
+    if (tramRouter.checkIfAllowedToGo(tram)){
+      setTimeout(function(){
+        tram.position.x += 1;
+        mover.goAllTheWay(tram);
+      }, m.haltDuration);
+    }else{
+      // Must wait for prioritary tram to go
+      setTimeout(function(){
+        mover.haltAtStation(tram);
+      }, m.securityHaltDuration);
+    }
+  },
+
+  /* ------
+  Utils
+  ------ */
+
   isAtLastStation: function(tram){
     var lastStationIndex = tram.path.length - 1;
     return this.getCurrentStationIndex(tram) === lastStationIndex? true:false;
@@ -66,40 +106,5 @@ mover = {
       stations.push(tram.path[i].x);
     }
     return stations.indexOf(tram.position.x);
-  },
-
-  haltAtStation: function(tram){
-
-    if (tramRouter.checkIfAllowedToGo(tram)){
-      setTimeout(function(){
-        tram.position.x += 1;//this is called too many times, it just accelerates the tram sometimes
-        mover.goAllTheWay(tram);
-      }, m.haltDuration);
-    }else{
-      setTimeout(function(){
-        mover.haltAtStation(tram);
-      }, m.securityHaltDuration);// will get too much
-    }
-    /*setTimeout(function(){
-      tram.position.x += 1;//this is called too many times, it just accelerates the tram sometimes
-      goAllTheWay(tram);
-    }, getHaltDuration(tram));*/
-
-  },
-
-  initAllPositions: function(){
-    for (var i=0 ; i< m.nbTrams ; i++){
-      this.initPosition(m.trams[i]);
-    }
-  },
-
-  initPosition: function(tram){
-      tram.position = {
-        x: tram.path[0].x,
-        y: tram.path[0].y
-      };
   }
-
-
-
 };

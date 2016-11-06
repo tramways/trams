@@ -1,1 +1,0 @@
-var nbTrams = 3;
