@@ -6,6 +6,7 @@ body{
   font-size: 14px;
   color: #282c34;
   margin: 0px !important;
+  background: #fceddf;
 }
 
 h1, h2, h3, h4{
@@ -42,7 +43,7 @@ form{
   flex-direction: column;
   justify-content: flex-start;
   padding-top: .6em;
-  background-color: rgba(252, 237, 223, 0.32);
+  background-color: rgba(255, 255, 255, 0.62);
 }
 
 .nbPassengersSettings{
@@ -94,7 +95,7 @@ button{
 }
 
 .info > p{
-  background: rgba(40, 44, 52, 0.4);
+  background: #A7A09B;
   color: white;
   font-size: 80%;
   padding: 4px 20px;

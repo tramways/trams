@@ -12,8 +12,11 @@ tramManager = {
   },
 
   init: function(){
-    this.settings.trams = [];
     s = this.settings;
+  },
+
+  resetTrams: function(){
+    this.settings.trams = [];
   },
 
   create: function(id, color, nbPassengers){

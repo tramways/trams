@@ -3,7 +3,15 @@ var startTimeOut = 2000;
 // Node position (= where trams cross)
 
 document.getElementById("goButton").onclick = function() {
+  tramManager.init();
+  var trams = tramManager.getAllTrams();
 
+  if (trams.length > 0){
+    for (var i=0 ; i<trams.length ; i++){
+      clearInterval(trams[i].myInterval);
+      // but they are other trams now!!!
+    }
+  }
 
   var canvas = document.getElementById("canvas");
   var xNode = Math.floor(canvas.width/2);
@@ -11,7 +19,7 @@ document.getElementById("goButton").onclick = function() {
     x: xNode
   };
 
-  tramManager.init();
+  tramManager.resetTrams();
 
   var tramData = [{id: "A", color: "#C678DD"},
   {id: "B", color: "#61AFEF"},
@@ -22,7 +30,9 @@ document.getElementById("goButton").onclick = function() {
     tramData[k].nbPassengers = document.getElementById(domId).value;
     tramManager.create(tramData[k].id, tramData[k].color, tramData[k].nbPassengers);
   }
-  var trams = tramManager.getAllTrams();
+
+
+  trams = tramManager.getAllTrams();
 
   renderer.init(trams, node);
   pathGenerator.init(trams, node);
@@ -30,16 +40,18 @@ document.getElementById("goButton").onclick = function() {
   mover.init(trams);
   userInfo.init();
 
-  userInfo.printInfo("About to start...");
+  userInfo.printInfo("About to start...", false);
 
-  pathGenerator.generateAllTramPaths();
+  //pathGenerator.generateAllTramPaths();
+  pathGenerator.generateAllTramPathsBis(1);
+
   mover.initAllPositions();
   renderer.resetCanvas();
 
   renderer.drawAll();
 
   setTimeout(function(){
-    userInfo.printInfo("... Starting!");
+    userInfo.printInfo("... Starting!", false);
     for (var i=0 ; i<nbTrams ; i++){
       mover.goAllTheWay(trams[i]);
     }

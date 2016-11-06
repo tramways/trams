@@ -41,7 +41,7 @@ tramRouter = {
     var competitors = [];
     for (var i=0 ; i<t.nbTrams ; i++){
       if (this.nextStationIsNode(t.trams[i]) && t.trams[i]!=tram){
-        console.log(t.trams[i].name + " competes with " + tram.name);
+        //console.log(t.trams[i].name + " competes with " + tram.name);
         competitors.push(t.trams[i]);
       }
     }
@@ -64,10 +64,18 @@ tramRouter = {
     var prioTram = this.getDefaultPrioritaryTram(competitors, tram);
     var prioTramFromRule = this.getPrioritaryTramFromRule(competitors, tram);
     if (prioTramFromRule !== null){
-      // Use rule
       prioTram = prioTramFromRule;
+      userInfo.printInfo(prioTram.id + " has priority (more passengers).", false);
     }else{
-      userInfo.printInfo("Using default");
+      // var nbCompetitors = competitors.length;
+      // var competitorsList = "";
+      // for (var i=0 ; i<nbCompetitors ; i++){
+      //     competitorsList += competitors[i].id + " ";
+      //     if (i !== nbCompetitors-1){
+      //       competitorsList += "and ";
+      //     }
+      // }
+      userInfo.printInfo("Same number of passengers => Using fallback priority rule (A>B>C)", true);
     }
 
     return prioTram;

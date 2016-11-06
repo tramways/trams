@@ -12,7 +12,12 @@ userInfo = {
   init: function(){
     u = this.settings;
   },
-  printInfo: function(info){
+  printInfo: function(info, isImportant){
     u.infoDiv.innerHTML = info;
+    if (isImportant){
+      u.infoDiv.style.backgroundColor = "#F78578";
+    }else{
+      u.infoDiv.style.backgroundColor = "#A7A09B";
+    }
   }
 };

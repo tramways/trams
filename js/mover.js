@@ -10,8 +10,7 @@ mover = {
     nbTrams: 0,
     trams: [],
     haltDuration: 2000,
-    securityHaltDuration: 3200,
-    myInterval: undefined
+    securityHaltDuration: 3000
   },
 
   init: function(trams){
@@ -25,12 +24,12 @@ mover = {
   },
 
   goAllTheWay: function(tram){
-    var myInt = setInterval(function(){
+    tram.myInterval = setInterval(function(){
       if(mover.isAtAStation(tram) && !mover.isAtFirstStation(tram)){
         if (mover.isAtLastStation(tram)){
-          clearInterval(myInt);
+          clearInterval(tram.myInterval);
         }else{
-          clearInterval(myInt);
+          clearInterval(tram.myInterval);
           mover.haltAtStation(tram);
         }
       }else{
@@ -38,8 +37,6 @@ mover = {
       }
       renderer.drawTram(tram);
     }, 10);
-    //myInterval = myInt;
-    //return myInt;
   },
 
   moveTram: function(tram){
