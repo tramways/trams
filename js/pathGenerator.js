@@ -15,20 +15,23 @@ pathGenerator = {
     distanceBtwTracks: 0,
     vPaddingCanvas: 0,
     hPaddingCanvas: 0,
-    distanceBtwStations: 0
+    distanceBtwStations: 0,
+    mode: 0
   },
 
   /* ------
   Init
   ------ */
 
-  init: function(trams, myNode){
-    this.initGeometry();
+  init: function(trams, myNode, mode){
+    this.initGeometry(mode);
     this.initData(trams, myNode);
     p = this.settings;
   },
 
-  initGeometry: function(){
+  initGeometry: function(mode){
+    this.settings.mode = mode;
+
     var canvas = document.getElementById("canvas");
     this.settings.canvasWidth = canvas.width;
     this.settings.distanceBtwTracks = Math.floor(canvas.width/10);
@@ -47,21 +50,18 @@ pathGenerator = {
   Generate paths
   ------ */
 
-  generateAllTramPaths: function(){
+  generateAllTramPaths: function(mode){
+
+    var stationsBefore = this.getStationsBefore(mode);
     for (var i=0 ; i<p.nbTrams; i++){
       this.resetPath(p.trams[i]);
-      this.generatePath(i, p.trams[i]);
+      this.generatePath(i, p.trams[i], stationsBefore[i]);
     }
   },
 
-  resetPath: function(tram){
-    tram.path=[];
-  },
-
-  generatePath: function(tramIndex, tram){
+  generatePath: function(tramIndex, tram, stationsBefore){
     // Hypothesis: Tram always crosses (= goes through the node)
     var yPosition = (tramIndex*p.distanceBtwTracks) + p.vPaddingCanvas;
-    var stationsBefore = this.getRandomNbStationsBeforeNode();
     var stationsAfter = this.getRandomNbStationsAfterNode();
     // Add node point to tram path
     tram.path.push({
@@ -77,6 +77,10 @@ pathGenerator = {
       tram.path.push({x: p.node.x + j*p.distanceBtwStations,
         y: yPosition});
     }
+  },
+
+  resetPath: function(tram){
+    tram.path=[];
   },
 
   /* ------
@@ -112,55 +116,24 @@ pathGenerator = {
   },
 
 
-
-  generateAllTramPathsBis: function(bla){
-
-    var stationsBefore = this.getStationsBefore(bla);
-
-    for (var i=0 ; i<p.nbTrams; i++){
-      this.resetPath(p.trams[i]);
-      this.generatePathBis(i, p.trams[i], stationsBefore[i]);
-    }
-  },
-
-
-  generatePathBis: function(tramIndex, tram, stationsBefore){
-    // Hypothesis: Tram always crosses (= goes through the node)
-    var yPosition = (tramIndex*p.distanceBtwTracks) + p.vPaddingCanvas;
-    var stationsAfter = this.getRandomNbStationsAfterNode();
-    // Add node point to tram path
-    tram.path.push({
-      x: p.node.x,
-      y: yPosition});
-    // Add points before node
-    for (var i=1 ; i<=stationsBefore ; i++){
-      tram.path.unshift({x: p.node.x - i*p.distanceBtwStations,
-        y: yPosition});
-    }
-    // Add points after node
-    for (var j=1 ; j<=stationsAfter ; j++){
-      tram.path.push({x: p.node.x + j*p.distanceBtwStations,
-        y: yPosition});
-    }
-  },
-
-
-  getStationsBefore: function(bla){
+  getStationsBefore: function(mode){
     var stationsBefore = [];
-    switch (bla) {
+    var stationBefore = this.getRandomNbStationsBeforeNode();
+    switch (mode) {
       case 0:
           // All
-          var stationBefore = this.getRandomNbStationsBeforeNode();
           for (var i=0 ; i<p.trams.length ; i++){
             stationsBefore.push(stationBefore);
           }
           break;
       case 1:
           // Only two of them (A and B in this example)
-          stationsBefore = [2, 3, 3];
+          stationsBefore = [stationBefore-1, stationBefore, stationBefore];
           break;
       default:
-          stationsBefore = [2, 2, 2];
+          for (var i=0 ; i<p.trams.length ; i++){
+            stationsBefore.push(stationBefore);
+          }
     }
     return stationsBefore;
   }

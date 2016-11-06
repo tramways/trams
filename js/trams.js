@@ -44,7 +44,7 @@ document.getElementById("goButton").onclick = function() {
 
   //pathGenerator.generateAllTramPaths();
 
-  pathGenerator.generateAllTramPathsBis(getMode());
+  pathGenerator.generateAllTramPaths(getMode());
 
   mover.initAllPositions();
   renderer.resetCanvas();
