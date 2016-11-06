@@ -14,6 +14,9 @@ function createTram(id, color, nbPassengers){
     position: {
       x: 0,
       y: 0
+    },
+    getNbStations: function(){
+      return newTram.path.length;
     }
   };
   priority++;
