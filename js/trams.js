@@ -15,7 +15,7 @@ var tramA = createTram("A", "#C678DD", defaultNbPassengers);
 var tramB = createTram("B", "#61AFEF", defaultNbPassengers);
 var tramC = createTram("C", "#EEA45F", defaultNbPassengers);
 var allTrams = [tramA, tramB, tramC];
-var nbTrams = allTrams.length;
+// var nbTrams = allTrams.length;
 
 // Node position (= where trams cross)
 var xNode = Math.floor(canvasWidth/2);
@@ -64,6 +64,10 @@ function resetPath(tram){
 function generatePath(tramIndex, tram){
   // H: tram always crosses
   // if tram doesn't cross, don't show it!!! simple :)
+
+  // need distanceBetweenTramTracks, verticalPaddingCanvas, node,
+  // distanceBetweenStations
+
   var yPosition = (tramIndex*distanceBetweenTramTracks) + verticalPaddingCanvas;
   var stationsBefore = getRandomNbStationsBeforeNode();
   var stationsAfter = getRandomNbStationsAfterNode();
@@ -87,29 +91,22 @@ function initializePosition(tram){
   };
 }
 
-function drawAllTracks(){
-  for (var i=0; i<nbTrams ; i++){
-    var tram = allTrams[i];
-    drawTracks(tram);
-  }
-}
-
-function drawAllTrams(){
-  for (var i=0 ; i<nbTrams ; i++){
-    drawTram(allTrams[i]);
-  }
-}
-
 document.getElementById("goButton").onclick = function() {
-  //drawAllTrams();
-  //e.preventDefault();
+
+
+  // renderer.init(allTrams);
+  // renderer.generateAllTramPaths();
+  // renderer.drawAllTracks();
+  // renderer.drawNode();
+
+
   generateAllTramPaths();
   initializePosition(tramA);
   initializePosition(tramB);
   initializePosition(tramC);
   reinitialize();
 
-  drawAllTracks();// how can i be sure??? callback?
+  drawAllTracks();
   drawNode();
 
   drawTram(tramA);
@@ -124,11 +121,14 @@ document.getElementById("goButton").onclick = function() {
 };
 
 function reinitialize(){
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  //??? works
+  reinitializeCanvas();
   initializeTramsNbPassengers();
   initializeTramsPositions();
   initializeIntervals();
+}
+
+function reinitializeCanvas(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function initializeIntervals(){
@@ -192,11 +192,11 @@ function isAtAStation(tram){
 
 function getCurrentStationIndex(tram){
   // Only x counts
-  var xStations = [];
+  var stations = [];
   for (var i=0 ; i<tram.path.length; i++){
-    xStations.push(tram.path[i].x);
+    stations.push(tram.path[i].x);
   }
-  return xStations.indexOf(tram.position.x);
+  return stations.indexOf(tram.position.x);
 }
 
 function haltAtStation(tram){

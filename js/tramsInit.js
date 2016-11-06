@@ -1,4 +1,5 @@
 var priority = 0;
+// tbd reinit!!
 
 function createTram(id, color, nbPassengers){
   var newTram = {

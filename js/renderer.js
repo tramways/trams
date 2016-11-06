@@ -1,11 +1,13 @@
 /* ---------------------------
-  Renderer.js:
-  All canvas rendering functions
+  renderer.js:
+  All rendering settings and
+  canvas rendering functions.
 --------------------------- */
 
 /* ------
 Rendering settings
 ------ */
+
 // Tram
 var tramDotRadius = 2;
 // Tracks
@@ -17,13 +19,29 @@ var stationRadius = 4;
 var lineWidthNode = 1;
 var nodeColor = 'white';
 var nodeTextColor = nodeColor;
-// Common
+// Utils
 var font = "1em sans-serif";
 
+/* ------
+Utils
+------ */
+
+function drawText(color, text, x, y){
+  ctx.fillStyle = color;
+  ctx.font = font;
+  ctx.fillText(text, x, y);
+}
 
 /* ------
 Render tracks
 ------ */
+
+function drawAllTracks(){
+  for (var i=0; i<nbTrams ; i++){
+    var tram = allTrams[i];
+    drawTracks(tram);
+  }
+}// tbd move
 
 function drawTracks(tram){
   drawRailway(tram);
@@ -53,14 +71,18 @@ function drawStations(tram){
 }
 
 function drawName(tram){
-  ctx.fillStyle = tram.color;
-  ctx.font = font;
-  ctx.fillText(tram.name, tram.path[0].x -60, tram.path[0].y +4);
+  drawText(tram.color, tram.name, tram.path[0].x -60, tram.path[0].y +4);
 }
 
 /* ------
 Render tram
 ------ */
+
+function drawAllTrams(){
+  for (var i=0 ; i<nbTrams ; i++){
+    drawTram(allTrams[i]);
+  }
+}// tbd move
 
 function drawTram(tram){
   // The tram is drawn as a point.
@@ -80,6 +102,7 @@ function drawNode(){
   // nodePosition
   // nbTrams
   // Tram y position
+  // var height = nbTrams*distanceBetweenTramTracks;
   var yFirstTram = allTrams[0].path[0].y;
   var yLastTram = allTrams[allTrams.length - 1].path[0].y;
   var rectangleWidth = stationRadius*5;
@@ -95,7 +118,5 @@ function drawNode(){
   ctx.lineWidth = lineWidthNode;
   ctx.stroke();
 
-  ctx.fillStyle = nodeTextColor;
-  ctx.font = font;
-  ctx.fillText("Cross", startingPoint.x -4, startingPoint.y -10);
+  drawText(nodeTextColor, "Cross", startingPoint.x -8, startingPoint.y -10);
 }
