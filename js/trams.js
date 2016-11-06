@@ -54,20 +54,20 @@ document.getElementById("goButton").onclick = function() {
 
 function reinitialize(){
   reinitializeCanvas();
-  initializeTramsNbPassengers();
-  initializeTramsPositions();
-  initializeIntervals();
+  reinitializeTrams();
+  // reinitializeIntervals();
 }
 
 function reinitializeCanvas(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function initializeIntervals(){
-//
+function reinitializeTrams(){
+  reinitializeTramsNbPassengers();
+  reinitializeTramsPositions();
 }
 
-function initializeTramsNbPassengers(){
+function reinitializeTramsNbPassengers(){
   for (var i=0 ; i<nbTrams ; i++){
     var domId = getDOMId(allTrams[i]);
     allTrams[i].nbPassengers = document.getElementById(domId).value;
@@ -75,7 +75,7 @@ function initializeTramsNbPassengers(){
 };
 
 
-function initializeTramsPositions(){
+function reinitializeTramsPositions(){
   for (var i=0 ; i<nbTrams ; i++){
     initializePosition(allTrams[i]);
   }
@@ -84,68 +84,3 @@ function initializeTramsPositions(){
 function getDOMId(tram){
   return "nbPassengers" + tram.id;
 };
-
-// function goAllTheWay(tram){
-//     var vx = 1;
-//     var vy = 0;
-//     var myInt = setInterval(function(){
-//       if(isAtAStation(tram) && !isAtFirstStation(tram)){
-//         //tram.nextStationIndex++;
-//         if (isAtLastStation(tram)){
-//           clearInterval(myInt);
-//         }else{
-//           clearInterval(myInt);
-//           haltAtStation(tram);
-//           //goAllTheWay(tram);
-//           // after halt: go all the way
-//         }
-//       }else{
-//         tram.position.x += vx;
-//         tram.position.y += vy;
-//       }
-//       renderer.drawTram(tram);
-//     }, 10);
-//     return myInt;
-// }
-
-//
-// function isAtLastStation(tram){
-//   var lastStationIndex = tram.path.length - 1;
-//   return getCurrentStationIndex(tram) === lastStationIndex? true:false;
-// }
-//
-// function isAtFirstStation(tram){
-//   return getCurrentStationIndex(tram) === 0? true:false;
-// }
-//
-// function isAtAStation(tram){
-//   return getCurrentStationIndex(tram) > -1? true:false;
-// }
-
-// function getCurrentStationIndex(tram){
-//   // Only x counts
-//   var stations = [];
-//   for (var i=0 ; i<tram.path.length; i++){
-//     stations.push(tram.path[i].x);
-//   }
-//   return stations.indexOf(tram.position.x);
-// }
-//
-// function haltAtStation(tram){
-//
-//   if (tramRouter.checkIfAllowedToGo(tram)){
-//     setTimeout(function(){
-//       tram.position.x += 1;//this is called too many times, it just accelerates the tram sometimes
-//       goAllTheWay(tram);
-//     }, haltDuration);
-//   }else{
-//     setTimeout(function(){
-//       haltAtStation(tram);
-//     }, securityHaltDuration);// will get too much
-//   }
-//   /*setTimeout(function(){
-//     tram.position.x += 1;//this is called too many times, it just accelerates the tram sometimes
-//     goAllTheWay(tram);
-//   }, getHaltDuration(tram));*/
-//
-// }
