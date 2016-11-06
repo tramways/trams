@@ -1,13 +1,9 @@
 // Functional settings
 var haltDuration = 2000;
-var securityHaltDuration = 3000;
+var securityHaltDuration = 3200;
 
 // Graphics settings
 var startTimeOut = 2000;
-// var distanceBetweenStations = Math.floor(canvasWidth/6);
-// var horizontalPaddingCanvas = Math.floor(canvasWidth/20);
-// var verticalPaddingCanvas = Math.floor(canvasWidth/10);
-// var distanceBetweenTramTracks = Math.floor(canvasWidth/10);
 
 // Trams
 var defaultNbPassengers = 0;
@@ -24,65 +20,6 @@ var node = {
   impactedTrams: allTrams
 };
 
-// function getMaxNbStationsBeforeNode(){
-//   var availableHorizontalSpace = Math.abs(node.x - horizontalPaddingCanvas);
-//   var maxNb = Math.floor(availableHorizontalSpace/distanceBetweenStations);
-//   return maxNb;
-// }
-//
-// function getMaxNbStationsAfterNode(){
-//   var availableHorizontalSpace = (canvasWidth - node.x) - horizontalPaddingCanvas;
-//   var maxNb = Math.floor(availableHorizontalSpace/distanceBetweenStations);
-//   return maxNb;
-// }
-//
-// function getRandomNbStationsAfterNode(){
-//   var min = 1;
-//   var max = getMaxNbStationsAfterNode();
-//   // return Math.floor(Math.random() * (max - min + 1)) + min;
-//   return 2;
-// }
-//
-// function getRandomNbStationsBeforeNode(){
-//   var min = 1;
-//   var max = getMaxNbStationsBeforeNode();
-//   //return Math.floor(Math.random() * (max - min + 1)) + min;
-//   return 2;
-// }
-
-// function generateAllTramPaths(){
-//   for (var tramIndex=0 ; tramIndex<nbTrams; tramIndex++){
-//     resetPath(allTrams[tramIndex]);
-//     generatePath(tramIndex, allTrams[tramIndex]);
-//   }
-// }
-
-// function resetPath(tram){
-//   tram.path=[];
-// }
-//
-// function generatePath(tramIndex, tram){
-//   // H: tram always crosses
-//   // if tram doesn't cross, don't show it!!! simple :)
-//
-//   // need distanceBetweenTramTracks, verticalPaddingCanvas, node,
-//   // distanceBetweenStations
-//
-//   var yPosition = (tramIndex*distanceBetweenTramTracks) + verticalPaddingCanvas;
-//   var stationsBefore = getRandomNbStationsBeforeNode();
-//   var stationsAfter = getRandomNbStationsAfterNode();
-//
-//   tram.path.push({
-//     x: node.x,
-//     y: yPosition});
-//
-//   for (var i=1 ; i<=stationsBefore ; i++){
-//     tram.path.unshift({x: node.x - i*distanceBetweenStations, y: yPosition});
-//   }
-//   for (var j=1 ; j<=stationsAfter ; j++){
-//     tram.path.push({x: node.x + j*distanceBetweenStations, y: yPosition});
-//   }
-// }
 
 function initializePosition(tram){
   tram.position = {
@@ -96,7 +33,8 @@ document.getElementById("goButton").onclick = function() {
   userInfo.init();
   renderer.init(allTrams, node);
   pathGenerator.init(allTrams, node);
-  //generateAllTramPaths();
+  tramRouter.init(allTrams);
+
   pathGenerator.generateAllTramPaths();
 
   initializePosition(tramA);
@@ -194,7 +132,7 @@ function getCurrentStationIndex(tram){
 
 function haltAtStation(tram){
 
-  if (isAllowed(tram)){
+  if (tramRouter.checkIfAllowedToGo(tram)){
     setTimeout(function(){
       tram.position.x += 1;//this is called too many times, it just accelerates the tram sometimes
       goAllTheWay(tram);
@@ -211,127 +149,123 @@ function haltAtStation(tram){
 
 }
 
-function isAllowed(tram){
-    return !mustWaitLonger(tram);
-}
-
-function getNextStation(tram){
-  var currentStationIndex = getCurrentStationIndex(tram);
-}
-
-function getCurrentStationIndex(tram){
-  // we know it's evaluated when the tram is at a station anyway
-  var currentStationIndex = -1;
-  var nbStations = tram.path.length;
-  for (var i=0 ; i<nbStations ; i++){
-    if (tram.path[i].x === tram.position.x && tram.path[i].y === tram.position.y){
-      currentStationIndex = i;
-    }
-  }
-  return currentStationIndex;
-}
-
-function nextStationIsNode(tram){
-  var nextStationIndex = getCurrentStationIndex(tram) + 1;
-  return (tram.path[nextStationIndex].x === node.x)? true:false;
-}
+// function getNextStation(tram){
+//   var currentStationIndex = getCurrentStationIndex(tram);
+// }
+//
+// function getCurrentStationIndex(tram){
+//   // we know it's evaluated when the tram is at a station anyway
+//   var currentStationIndex = -1;
+//   var nbStations = tram.path.length;
+//   for (var i=0 ; i<nbStations ; i++){
+//     if (tram.path[i].x === tram.position.x && tram.path[i].y === tram.position.y){
+//       currentStationIndex = i;
+//     }
+//   }
+//   return currentStationIndex;
+// }
+//
+// function nextStationIsNode(tram){
+//   var nextStationIndex = getCurrentStationIndex(tram) + 1;
+//   return (tram.path[nextStationIndex].x === node.x)? true:false;
+// }
 
 
-function mustWaitLonger(tram){
-  var mustWaitLonger = false;
-  // find out the coordinates
-  if (nextStationIsNode(tram)){
-    var competitors = getCompetitors(tram);
-    if (getCompetitors(tram).length !== 0){
-      if (!hasPriority(tram, competitors)){
-        mustWaitLonger = true;
-        console.log(tram.name + " must wait");
-      }
-    }
-  }
-  return mustWaitLonger;
-}
+// function checkIfAllowed(tram){
+//   var checkIfAllowed = true;
+//   // find out the coordinates
+//   if (nextStationIsNode(tram)){
+//     var competitors = getCompetitors(tram);
+//     if (getCompetitors(tram).length !== 0){
+//       if (!hasPriority(tram, competitors)){
+//         checkIfAllowed = false;
+//         console.log(tram.name + " must wait");
+//       }
+//     }
+//   }
+//   return checkIfAllowed;
+// }
 
+//
+// function getCompetitors(tram){
+//   var competitors = [];
+//   for (var i=0 ; i<nbTrams ; i++){
+//     if (nextStationIsNode(allTrams[i]) && allTrams[i]!=tram){
+//       console.log(allTrams[i].name + " competes with " + tram.name);
+//       competitors.push(allTrams[i]);
+//     }
+//   }
+//   return competitors;
+// }
 
-function getCompetitors(tram){
-  var competitors = [];
-  for (var i=0 ; i<nbTrams ; i++){
-    if (nextStationIsNode(allTrams[i]) && allTrams[i]!=tram){
-      console.log(allTrams[i].name + " competes with " + tram.name);
-      competitors.push(allTrams[i]);
-    }
-  }
-  return competitors;
-}
+// // this also supports the case where several nodes, i.e. don't leave simulatenously
+// function hasPriority(tram, competitors){
+//   var competingTrams = competitors;
+//   //competingTrams.push(tram);
+//
+//   if (getPrioritaryTram(competingTrams, tram) === tram){
+//     return true;
+//   }else{
+//     return false;
+//   }
+// }
 
-// this also supports the case where several nodes. dont leave simulatenously
-function hasPriority(tram, competitors){
-  var competingTrams = competitors;
-  //competingTrams.push(tram);
-
-  if (getPrioritaryTram(competingTrams, tram) === tram){
-    return true;
-  }else{
-    return false;
-  }
-}
-
-function getPrioritaryTram(competitors, tram){
-  var prioTram = getDefaultPrioritaryTram(competitors, tram);
-  var prioTramFromRule = getPrioritaryTramFromRule(competitors, tram);
-  if (prioTramFromRule !== null){
-    // Use rule
-    prioTram = prioTramFromRule;
-  }else{
-    userInfo.printInfo("Using default");
-  }
-
-  return prioTram;
-}
-
-function getPrioritaryTramFromRule(competitors, tram){
-
-  var competingTrams = competitors;
-  competingTrams.unshift(tram);
-  var nbCompetitors = competingTrams.length;
-  var nbsPassengers = [];
-  var highestNbPassengers = 0;
-
-  for (var i=1 ; i<nbCompetitors ; i++){
-    nbsPassengers.push(competitors[i].nbPassengers);
-  }
-  nbsPassengers.sort(function(a, b){
-    return b-a;
-  });
-
-  for (var i=0 ; i<nbCompetitors ; i++){
-    if (competingTrams[i].nbPassengers > highestNbPassengers){
-      highestNbPassengers = competingTrams[i].nbPassengers;
-      prioTram = competingTrams[i];
-    }
-  }
-
-  if(nbsPassengers[0]>nbsPassengers[1]){
-    return prioTram;
-  }else{
-    // They are equal
-    return null;
-  }
-}
-
-function getDefaultPrioritaryTram(competitors, tram){
-  var competingTrams = competitors;
-  competingTrams.push(tram);
-
-  var prioTram = competingTrams[0];
-  var highestPrio = prioTram.defaultPriority;
-  var nbCompetitors = competitors.length;
-  for (var i=1 ; i<nbCompetitors ; i++){
-    if (competingTrams[i].defaultPriority < highestPrio) {
-      // < because (Lowest prio number = Highest prio)
-      highestPrio = competingTrams[i].defaultPriority;
-      prioTram = competingTrams[i];
-    }
-  }
-  return prioTram;
-}
+// function getPrioritaryTram(competitors, tram){
+//   var prioTram = getDefaultPrioritaryTram(competitors, tram);
+//   var prioTramFromRule = getPrioritaryTramFromRule(competitors, tram);
+//   if (prioTramFromRule !== null){
+//     // Use rule
+//     prioTram = prioTramFromRule;
+//   }else{
+//     userInfo.printInfo("Using default");
+//   }
+//
+//   return prioTram;
+// }
+//
+// function getPrioritaryTramFromRule(competitors, tram){
+//
+//   var competingTrams = competitors;
+//   competingTrams.unshift(tram);
+//   var nbCompetitors = competingTrams.length;
+//   var nbsPassengers = [];
+//   var highestNbPassengers = 0;
+//
+//   for (var i=1 ; i<nbCompetitors ; i++){
+//     nbsPassengers.push(competitors[i].nbPassengers);
+//   }
+//   nbsPassengers.sort(function(a, b){
+//     return b-a;
+//   });
+//
+//   for (var i=0 ; i<nbCompetitors ; i++){
+//     if (competingTrams[i].nbPassengers > highestNbPassengers){
+//       highestNbPassengers = competingTrams[i].nbPassengers;
+//       prioTram = competingTrams[i];
+//     }
+//   }
+//
+//   if(nbsPassengers[0]>nbsPassengers[1]){
+//     return prioTram;
+//   }else{
+//     // They are equal
+//     return null;
+//   }
+// }
+//
+// function getDefaultPrioritaryTram(competitors, tram){
+//   var competingTrams = competitors;
+//   competingTrams.push(tram);
+//
+//   var prioTram = competingTrams[0];
+//   var highestPrio = prioTram.defaultPriority;
+//   var nbCompetitors = competitors.length;
+//   for (var i=1 ; i<nbCompetitors ; i++){
+//     if (competingTrams[i].defaultPriority < highestPrio) {
+//       // < because (Lowest prio number = Highest prio)
+//       highestPrio = competingTrams[i].defaultPriority;
+//       prioTram = competingTrams[i];
+//     }
+//   }
+//   return prioTram;
+// }
