@@ -24,7 +24,7 @@ tramManager = {
   resetAllIntervals(){
     nbTrams = s.trams.length;
     for(var i=0; i<nbTrams ; i++){
-        clearInterval(trams[i].myInterval);
+        clearInterval(s.trams[i].myInterval);
     }
   },
 
