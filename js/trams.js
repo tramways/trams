@@ -94,24 +94,35 @@ function initializePosition(tram){
 document.getElementById("goButton").onclick = function() {
 
 
-  // renderer.init(allTrams);
-  // renderer.generateAllTramPaths();
-  // renderer.drawAllTracks();
-  // renderer.drawNode();
-
-
+  renderer.init(allTrams);
   generateAllTramPaths();
+
   initializePosition(tramA);
   initializePosition(tramB);
   initializePosition(tramC);
   reinitialize();
 
-  drawAllTracks();
-  drawNode();
 
-  drawTram(tramA);
-  drawTram(tramB);
-  drawTram(tramC);
+
+  renderer.drawAllTracks();
+  renderer.drawNode();
+  // renderer.drawAllTrams();
+  renderer.drawTram(tramA);
+  renderer.drawTram(tramB);
+  renderer.drawTram(tramC);
+
+  // generateAllTramPaths();
+  // initializePosition(tramA);
+  // initializePosition(tramB);
+  // initializePosition(tramC);
+  // reinitialize();
+  //
+  // drawAllTracks();
+  // drawNode();
+
+  // drawTram(tramA);
+  // drawTram(tramB);
+  // drawTram(tramC);
 
   setTimeout(function(){
       goAllTheWay(tramA);
@@ -171,7 +182,7 @@ function goAllTheWay(tram){
         tram.position.x += vx;
         tram.position.y += vy;
       }
-      drawTram(tram);
+      renderer.drawTram(tram);
     }, 10);
     return myInt;
 }

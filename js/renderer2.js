@@ -10,7 +10,7 @@ renderer = {
 
   settings: {
     nbTrams: 0,
-    allTrams: [],
+    trams: [],
     tramDotRadius: 2,
     // Tracks
     tracksColor: "#ABB2BF",
@@ -20,23 +20,21 @@ renderer = {
     // Node
     lineWidthNode: 1,
     nodeColor: 'white',
-    nodeTextColor: nodeColor,
+    nodeTextColor: 'white',
     // Utils
     font: "1em sans-serif"
-    //
     // numArticles: 5,
     // articleList: $("#article-list"),
     // moreButton: $("#more-button")
   },
 
-  init: function(allTramss) {
+  init: function(trams) {
     var canvas = document.getElementById("canvas");
     this.settings.ctx = canvas.getContext("2d");
-    this.settings.allTrams = allTramss;
-    this.settings.nbTrams = this.settings.allTrams.length;
+    this.settings.trams = trams;
+    this.settings.nbTrams = this.settings.trams.length;
     s = this.settings;
 
-    // MUST BE CALLED!!!
     //this.bindUIActions();
   },
 
@@ -48,7 +46,7 @@ renderer = {
 
   drawAllTracks: function(){
     for (var i=0; i<s.nbTrams ; i++){
-      var tram = s.allTrams[i];
+      var tram = s.trams[i];
       this.drawTracks(tram);
     }
   },
@@ -72,7 +70,7 @@ renderer = {
     var nbStations = tram.getNbStations();
     for (var i=0 ; i<nbStations ; i++){
       s.ctx.beginPath();
-      s.ctx.arc(tram.path[i].x, tram.path[i].y, stationRadius, 0, 2*Math.PI);
+      s.ctx.arc(tram.path[i].x, tram.path[i].y, s.stationRadius, 0, 2*Math.PI);
       s.ctx.strokeStyle = s.tracksColor;
       s.ctx.fillStyle = s.fillStationsColor;
       s.ctx.fill();
@@ -89,9 +87,9 @@ renderer = {
   Render tram
   ------ */
 
-  drawAllTrams: function(){
+  drawtrams: function(){
     for (var i=0 ; i<s.nbTrams ; i++){
-      drawTram(s.allTrams[i]);
+      drawTram(s.trams[i]);
     }
   },
 
@@ -114,8 +112,8 @@ renderer = {
     // nbTrams
     // Tram y position
     // var height = nbTrams*distanceBetweenTramTracks;
-    var yFirstTram = s.allTrams[0].path[0].y;
-    var yLastTram = s.allTrams[allTrams.length - 1].path[0].y;
+    var yFirstTram = s.trams[0].path[0].y;
+    var yLastTram = s.trams[s.trams.length - 1].path[0].y;
     var rectangleWidth = s.stationRadius*5;
     var rectangleHeight = yLastTram - yFirstTram + rectangleWidth;
 
@@ -127,9 +125,9 @@ renderer = {
     s.ctx.lineCap = 'round';
     s.ctx.strokeStyle = s.nodeColor;
     s.ctx.lineWidth = s.lineWidthNode;
-    ctx.stroke();
+    s.ctx.stroke();
 
-    drawText(s.nodeTextColor, "Cross", startingPoint.x -8, startingPoint.y -10);
+    this.drawText(s.nodeTextColor, "Cross", startingPoint.x -8, startingPoint.y -10);
   }
 
   // bindUIActions: function() {
